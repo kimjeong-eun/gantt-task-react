@@ -1,3 +1,19 @@
+# gantt-task-react-custom
+
+📌 This is a customized fork of [gantt-task-react](https://github.com/MaTeMaTuK/gantt-task-react).
+
+### Customizations
+
+- ✅ Baseline line rendering
+- 🎨 Baseline color customization
+- 📆 Extended date range calculation
+- 🛠 Additional Calendar refinements
+
+### License
+
+This project is licensed under the [MIT License](./LICENSE).
+Original copyright © 2020 MaTeMaTuK
+
 # gantt-task-react
 
 ## Interactive Gantt Chart for React with TypeScript.

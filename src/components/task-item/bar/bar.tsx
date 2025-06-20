@@ -20,8 +20,31 @@ export const Bar: React.FC<TaskItemProps> = ({
     task.height
   );
   const handleHeight = task.height - 2;
+
+  // baseline 계산
+  const showBaseline = task.baselineStart && task.baselineEnd;
+  const baselineX =
+    showBaseline && task.baselineStart!.getTime() < task.baselineEnd!.getTime()
+      ? task.xBaseline1
+      : 0;
+  const baselineWidth =
+    showBaseline && task.baselineStart!.getTime() < task.baselineEnd!.getTime()
+      ? (task.xBaseline2 ?? 0) - (task.xBaseline1 ?? 0)
+      : 0;
+
   return (
     <g className={styles.barWrapper} tabIndex={0}>
+      {showBaseline && (
+        <rect
+          x={baselineX}
+          y={task.y + task.height + 2}
+          width={baselineWidth}
+          height={4}
+          rx={2}
+          ry={2}
+          fill={task.baselineColor || "#888"}
+        />
+      )}
       <BarDisplay
         x={task.x1}
         y={task.y}

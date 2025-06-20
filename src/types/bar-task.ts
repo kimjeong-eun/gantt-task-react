@@ -18,6 +18,8 @@ export interface BarTask extends Task {
     progressColor: string;
     progressSelectedColor: string;
   };
+  xBaseline1?: number; // 좌측 x 좌표
+  xBaseline2?: number; // 우측 x 좌표
 }
 
 export type TaskTypeInternal = TaskType | "smalltask";

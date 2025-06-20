@@ -182,6 +182,13 @@ const convertToBar = (
     progressSelectedColor: barProgressSelectedColor,
     ...task.styles,
   };
+  const xBaseline1 = task.baselineStart
+    ? taskXCoordinate(task.baselineStart, dates, columnWidth)
+    : undefined;
+  const xBaseline2 = task.baselineEnd
+    ? taskXCoordinate(task.baselineEnd, dates, columnWidth)
+    : undefined;
+
   return {
     ...task,
     typeInternal,
@@ -197,6 +204,8 @@ const convertToBar = (
     height: taskHeight,
     barChildren: [],
     styles,
+    xBaseline1,
+    xBaseline2,
   };
 };
 
@@ -247,8 +256,12 @@ const convertToMilestone = (
 };
 
 const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
-  const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
+  // 범위 밖일 경우 첫날/마지막날로 클램프
+  if (xDate <= dates[0]) return 0;
+  if (xDate >= dates[dates.length - 1])
+    return (dates.length - 1) * columnWidth;
 
+  const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
   const remainderMillis = xDate.getTime() - dates[index].getTime();
   const percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());

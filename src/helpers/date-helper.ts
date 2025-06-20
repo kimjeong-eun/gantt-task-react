@@ -75,15 +75,23 @@ export const ganttDateRange = (
   preStepsCount: number
 ) => {
   let newStartDate: Date = tasks[0].start;
-  let newEndDate: Date = tasks[0].start;
+  let newEndDate: Date = tasks[0].end;
+
   for (const task of tasks) {
-    if (task.start < newStartDate) {
-      newStartDate = task.start;
-    }
-    if (task.end > newEndDate) {
-      newEndDate = task.end;
+    const candidateDates = [
+      task.start,
+      task.end,
+      task.baselineStart,
+      task.baselineEnd,
+    ].filter(Boolean) as Date[];
+
+    for (const date of candidateDates) {
+      if (date < newStartDate) newStartDate = date;
+      if (date > newEndDate) newEndDate = date;
     }
   }
+
+  // 기존 viewMode 확장 로직 유지
   switch (viewMode) {
     case ViewMode.Year:
       newStartDate = addToDate(newStartDate, -1, "year");
@@ -123,13 +131,13 @@ export const ganttDateRange = (
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
       newEndDate = startOfDate(newEndDate, "day");
-      newEndDate = addToDate(newEndDate, 66, "hour"); // 24(1 day)*3 - 6
+      newEndDate = addToDate(newEndDate, 66, "hour");
       break;
     case ViewMode.HalfDay:
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
       newEndDate = startOfDate(newEndDate, "day");
-      newEndDate = addToDate(newEndDate, 108, "hour"); // 24(1 day)*5 - 12
+      newEndDate = addToDate(newEndDate, 108, "hour");
       break;
     case ViewMode.Hour:
       newStartDate = startOfDate(newStartDate, "hour");
@@ -138,6 +146,7 @@ export const ganttDateRange = (
       newEndDate = addToDate(newEndDate, 1, "day");
       break;
   }
+
   return [newStartDate, newEndDate];
 };
 
