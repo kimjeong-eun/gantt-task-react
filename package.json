@@ -1,6 +1,6 @@
 {
   "name": "gantt-task-react-custom",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A customized version of gantt-task-react with baseline support.",
   "author": "jeongeun kim <jeongeun587@gmail.com>",
   "homepage": "https://github.com/kimjeong-eun/gantt-task-react",

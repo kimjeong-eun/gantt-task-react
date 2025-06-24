@@ -125,7 +125,6 @@ const App = () => {
         columnWidth={columnWidth}
         colDefs={colDefs}
         headerHeight={100}
-        headerColor='red'
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
