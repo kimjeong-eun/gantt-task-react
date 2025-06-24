@@ -11,7 +11,7 @@ export type GridBodyProps = {
   columnWidth: number;
   todayColor: string;
   rtl: boolean;
-  ganttHeight:number;
+  gridHeight:number;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
   tasks,
@@ -21,7 +21,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   columnWidth,
   todayColor,
   rtl,
-  ganttHeight
+  gridHeight
 }) => {
   let y = 0;
   const gridRows: ReactChild[] = [];
@@ -60,7 +60,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   }
 
   // 필요한 만큼 빈 row 추가
-  const emptyRowCount = Math.ceil((ganttHeight - y) / rowHeight);
+  const emptyRowCount = Math.ceil((gridHeight - y) / rowHeight);
   for (let i = 0; i < emptyRowCount; i++) {
     gridRows.push(
       <rect

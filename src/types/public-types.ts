@@ -112,6 +112,7 @@ export interface StylingOption {
   listCellWidth?: string;
   rowHeight?: number;
   ganttHeight?: number;
+  gridHeight ?:number;
   barCornerRadius?: number;
   handleWidth?: number;
   fontFamily?: string;
