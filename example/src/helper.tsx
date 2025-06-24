@@ -9,16 +9,46 @@ export function initTasks() {
       id: '1',
       name: 'Design',
       start: new Date('2025-06-01'),
-      end: new Date('2025-06-05'),
+      end: new Date('2025-06-09'),
       type: 'task',
       progress: 70,
-      styles: { progressColor: '#5aa9e6', backgroundColor: '#5aa9e6' },
-      baselineStart :  new Date('2025-05-30'),
-      baselineEnd : new Date('2025-06-02'),
-      baselineColor:'#de6565'
+      styles: {
+        progressColor: '#5aa9e6', //bar progress color
+        backgroundColor: '#5aa9e6', // bar background color
+        defaultRowColor :'', //default row color (table)
+        selectedRowColor : '#5aa9e6' // selected row color (table)
+      },
+      baselineStart :  new Date('2025-06-01'),
+      baselineEnd : new Date('2025-06-05'),
+      baselineColor:'#de6565',
+      tableDatas : {
+        name2 : 'test',
+        status : 'test2',
+        start :'2025-06-06',
+        end :'2025-06-09'
+      }
     },
     {
       id: '2',
+      name: 'Development',
+      start: new Date('2025-06-06'),
+      end: new Date('2025-06-09'),
+      type: 'task',
+      progress: 50,
+      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
+      dependencies: ['1'],
+      baselineStart : new Date('2025-06-03'),
+      baselineEnd : new Date('2025-06-08'),
+      baselineColor:'#de6565',
+      tableDatas : {
+        name2 : 'test',
+        status : 'test2',
+        start :'2025-06-06',
+        end :'2025-06-09'
+      }
+    },
+    {
+      id: '3',
       name: 'Development',
       start: new Date('2025-06-06'),
       end: new Date('2025-06-12'),
@@ -28,7 +58,32 @@ export function initTasks() {
       dependencies: ['1'],
       baselineStart : new Date('2025-06-03'),
       baselineEnd : new Date('2025-06-10'),
-      baselineColor:'#de6565'
+      baselineColor:'#de6565',
+      tableDatas : {
+        name2 : 'test2',
+        status : 'test2',
+        start :'2025-06-06',
+        end :'2025-06-09'
+      }
+    },
+    {
+      id: '4',
+      name: 'Development2',
+      start: new Date('2025-06-06'),
+      end: new Date('2025-06-12'),
+      type: 'task',
+      progress: 50,
+      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
+      dependencies: ['1'],
+      baselineStart : new Date('2025-06-03'),
+      baselineEnd : new Date('2025-06-10'),
+      baselineColor:'#de6565',
+      tableDatas : {
+        name2 : 'test2',
+        status : 'test2',
+        start :'2025-06-06',
+        end :'2025-06-09'
+      }
     },
   ];
   return tasks;

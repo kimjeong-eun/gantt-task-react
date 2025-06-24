@@ -1,65 +1,81 @@
 import React from "react";
-import styles from "./task-list-header.module.css";
+import { ColumnDef } from "../../types/public-types";
 
 export const TaskListHeaderDefault: React.FC<{
   headerHeight: number;
   rowWidth: string;
   fontFamily: string;
   fontSize: string;
-}> = ({ headerHeight, fontFamily, fontSize, rowWidth }) => {
+  colDefs: ColumnDef[];
+}> = ({ headerHeight, fontFamily, fontSize, rowWidth, colDefs }) => {
+  const totalDepth = getHeaderDepth(colDefs);
+
+  // 헤더 전체 깊이 계산
+  function getHeaderDepth(cols: ColumnDef[]): number {
+    return cols.reduce((max, col) => {
+      const childDepth = col.children ? getHeaderDepth(col.children) + 1 : 1;
+      return Math.max(max, childDepth);
+    }, 0);
+  }
+
+  // 각 column이 차지할 leaf node 개수 (colSpan 용)
+  function getLeafCount(col: ColumnDef): number {
+    if (!col.children || col.children.length === 0) return 1;
+    return col.children.reduce((sum, child) => sum + getLeafCount(child), 0);
+  }
+
+  // level별로 colDef 배열을 나눔
+  function flattenByLevel(columns: ColumnDef[], level = 0, result: ColumnDef[][] = []) {
+    if (!result[level]) result[level] = [];
+    for (const col of columns) {
+      result[level].push(col);
+      if (col.children) {
+        flattenByLevel(col.children, level + 1, result);
+      }
+    }
+    return result;
+  }
+
+  const headerRows = flattenByLevel(colDefs);
+
   return (
-    <div
-      className={styles.ganttTable}
+    <table
       style={{
-        fontFamily: fontFamily,
-        fontSize: fontSize,
+        fontFamily,
+        fontSize,
+        borderCollapse: "collapse",
+        width: "100%",
       }}
     >
-      <div
-        className={styles.ganttTable_Header}
-        style={{
-          height: headerHeight - 2,
-        }}
-      >
-        <div
-          className={styles.ganttTable_HeaderItem}
-          style={{
-            minWidth: rowWidth,
-          }}
-        >
-          &nbsp;Name
-        </div>
-        <div
-          className={styles.ganttTable_HeaderSeparator}
-          style={{
-            height: headerHeight * 0.5,
-            marginTop: headerHeight * 0.2,
-          }}
-        />
-        <div
-          className={styles.ganttTable_HeaderItem}
-          style={{
-            minWidth: rowWidth,
-          }}
-        >
-          &nbsp;From
-        </div>
-        <div
-          className={styles.ganttTable_HeaderSeparator}
-          style={{
-            height: headerHeight * 0.5,
-            marginTop: headerHeight * 0.25,
-          }}
-        />
-        <div
-          className={styles.ganttTable_HeaderItem}
-          style={{
-            minWidth: rowWidth,
-          }}
-        >
-          &nbsp;To
-        </div>
-      </div>
-    </div>
+      <thead>
+      {headerRows.map((cols, level) => (
+        <tr key={`header-row-${level}`} style={{ height: headerHeight / totalDepth }}>
+          {cols.map((col, index) => {
+            const hasChildren = !!col.children?.length;
+            const colSpan = hasChildren ? getLeafCount(col) : 1;
+            const rowSpan = hasChildren ? 1 : totalDepth - level;
+
+            return (
+              <th
+                key={`${col.headerName}-${level}-${index}`}
+                colSpan={colSpan}
+                rowSpan={rowSpan}
+                style={{
+                  minWidth: col.minWidth || rowWidth,
+                  border: "1px solid #ddd",
+                  borderBottom : "none",
+                  padding: "4px",
+                  textAlign: "center",
+                  ...(col.headerStyle || {}),
+                }}
+              >
+                {col.headerName}
+              </th>
+            );
+          })}
+        </tr>
+      ))}
+      </thead>
+    </table>
   );
 };

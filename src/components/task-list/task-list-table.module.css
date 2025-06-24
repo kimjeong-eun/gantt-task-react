@@ -2,6 +2,7 @@
   display: table;
   border-bottom: #e6e4e4 1px solid;
   border-left: #e6e4e4 1px solid;
+  border-collapse: collapse;
 }
 
 .taskListTableRow {
@@ -9,8 +10,10 @@
   text-overflow: ellipsis;
 }
 
-.taskListTableRow:nth-of-type(even) .taskListCell {
+.taskListTableRow:nth-of-type(even) {
+  /*
   background-color: #f5f5f5;
+  */
 }
 
 .taskListCell {
@@ -19,6 +22,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border: 1px solid #e6e4e4;
+  text-align: left;
 }
 .taskListNameWrapper {
   display: flex;

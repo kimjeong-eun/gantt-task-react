@@ -245,6 +245,35 @@ export const getWeekNumberISO8601 = (date: Date) => {
   }
 };
 
+export function getWeekOfMonthKSIso8601(date: Date): number {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  const day = firstDayOfMonth.getDay(); // 0(일) ~ 6(토)
+
+  const firstMonday =
+    day === 1
+      ? new Date(firstDayOfMonth)
+      : new Date(firstDayOfMonth.getTime() + (((8 - (day || 7)) % 7) * 86400000));
+
+  const diffInMs = date.getTime() - firstMonday.getTime();
+  const daysSinceFirstMonday = Math.floor(diffInMs / 86400000);
+
+  const week = Math.floor(daysSinceFirstMonday / 7) + 1;
+
+  if (firstMonday.getMonth() !== month) {
+    const daysInFirstWeekInThisMonth = 7 - firstMonday.getDate() + 1;
+    if (daysInFirstWeekInThisMonth < 4) {
+      return week;
+    } else {
+      return week + 1;
+    }
+  }
+
+  return week;
+}
+
 export const getDaysInMonth = (month: number, year: number) => {
   return new Date(year, month + 1, 0).getDate();
 };

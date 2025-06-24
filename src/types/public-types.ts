@@ -23,6 +23,8 @@ export interface Task {
   styles?: {
     backgroundColor?: string;
     backgroundSelectedColor?: string;
+    defaultRowColor ?:string;
+    selectedRowColor?:string;
     progressColor?: string;
     progressSelectedColor?: string;
   };
@@ -34,7 +36,22 @@ export interface Task {
   baselineStart?: Date;
   baselineEnd?: Date;
   baselineColor?: string;
+  tableDatas : Record<string, TableCellValue>;
 }
+
+//
+export interface ColumnDef {
+  field?: string;
+  headerName: string;
+  minWidth?: string;
+  headerStyle?: React.CSSProperties;
+  cellStyle?: React.CSSProperties;
+  cellClass?: string;
+  cellRenderer?: (task: Task) => React.ReactNode;
+  children?: ColumnDef[];
+}
+
+export type TableCellValue = string | number | boolean | React.ReactNode;
 
 export interface EventOption {
   /**
@@ -126,6 +143,7 @@ export interface StylingOption {
     rowWidth: string;
     fontFamily: string;
     fontSize: string;
+    colDefs : ColumnDef[];
   }>;
   TaskListTable?: React.FC<{
     rowHeight: number;
@@ -140,9 +158,11 @@ export interface StylingOption {
      */
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
+    colDefs : ColumnDef[];
   }>;
 }
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
+  colDefs : ColumnDef[]
 }

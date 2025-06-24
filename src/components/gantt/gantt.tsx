@@ -26,6 +26,7 @@ import styles from "./gantt.module.css";
 
 export const Gantt: React.FunctionComponent<GanttProps> = ({
   tasks,
+  colDefs,
   headerHeight = 50,
   columnWidth = 60,
   listCellWidth = "155px",
@@ -446,6 +447,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     taskListRef,
     setSelectedTask: handleSelectedTask,
     onExpanderClick: handleExpanderClick,
+    colDefs,
     TaskListHeader,
     TaskListTable,
   };

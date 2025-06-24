@@ -1,19 +1,18 @@
 import React, { useMemo } from "react";
-import styles from "./task-list-table.module.css";
-import { Task } from "../../types/public-types";
+import { ColumnDef, Task, TableCellValue } from "../../types/public-types";
 
-const localeDateStringCache = {};
-const toLocaleDateStringFactory =
-  (locale: string) =>
-  (date: Date, dateTimeOptions: Intl.DateTimeFormatOptions) => {
-    const key = date.toString();
-    let lds = localeDateStringCache[key];
-    if (!lds) {
-      lds = date.toLocaleDateString(locale, dateTimeOptions);
-      localeDateStringCache[key] = lds;
-    }
-    return lds;
-  };
+const localeDateStringCache: Record<string, string> = {};
+const toLocaleDateStringFactory = (locale: string) => (
+  date: Date,
+  options: Intl.DateTimeFormatOptions
+) => {
+  const key = date.toISOString();
+  if (!localeDateStringCache[key]) {
+    localeDateStringCache[key] = date.toLocaleDateString(locale, options);
+  }
+  return localeDateStringCache[key];
+};
+
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
   weekday: "short",
   year: "numeric",
@@ -31,85 +30,109 @@ export const TaskListTableDefault: React.FC<{
   selectedTaskId: string;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
+  colDefs: ColumnDef[];
 }> = ({
-  rowHeight,
-  rowWidth,
-  tasks,
-  fontFamily,
-  fontSize,
-  locale,
-  onExpanderClick,
-}) => {
-  const toLocaleDateString = useMemo(
-    () => toLocaleDateStringFactory(locale),
-    [locale]
-  );
+        rowHeight,
+        rowWidth,
+        fontFamily,
+        fontSize,
+        locale,
+        tasks,
+        selectedTaskId,
+        setSelectedTask,
+        onExpanderClick,
+        colDefs,
+      }) => {
+  const toLocaleDateString = useMemo(() => toLocaleDateStringFactory(locale), [locale]);
+
+  const flattenColDefs = (defs: ColumnDef[]): ColumnDef[] =>
+    defs.flatMap((def) => (def.children?.length ? def.children : [def]));
+
+  const flatCols = flattenColDefs(colDefs);
+
+  const formatCellValue = (value: TableCellValue): React.ReactNode => {
+    if (value instanceof Date) {
+      return toLocaleDateString(value, dateTimeOptions);
+    }
+    return value;
+  };
 
   return (
-    <div
-      className={styles.taskListWrapper}
+    <table
       style={{
-        fontFamily: fontFamily,
-        fontSize: fontSize,
+        fontFamily,
+        fontSize,
+        borderCollapse: "collapse",
+        width: "100%",
       }}
     >
-      {tasks.map(t => {
-        let expanderSymbol = "";
-        if (t.hideChildren === false) {
-          expanderSymbol = "▼";
-        } else if (t.hideChildren === true) {
-          expanderSymbol = "▶";
-        }
+      <tbody>
+      {tasks.map((task) => {
+        const isSelected = selectedTaskId === task.id;
+        const expanderSymbol = task.hideChildren === false ? "▼" : task.hideChildren === true ? "▶" : "";
 
         return (
-          <div
-            className={styles.taskListTableRow}
-            style={{ height: rowHeight }}
-            key={`${t.id}row`}
+          <tr
+            key={task.id}
+            style={{
+              height: rowHeight,
+              backgroundColor: isSelected
+                ? task.styles?.selectedRowColor ?? undefined
+                : task.styles?.defaultRowColor ?? undefined,
+              cursor: "pointer",
+            }}
+            onClick={() => setSelectedTask(task.id)}
           >
-            <div
-              className={styles.taskListCell}
-              style={{
-                minWidth: rowWidth,
-                maxWidth: rowWidth,
-              }}
-              title={t.name}
-            >
-              <div className={styles.taskListNameWrapper}>
-                <div
-                  className={
-                    expanderSymbol
-                      ? styles.taskListExpander
-                      : styles.taskListEmptyExpander
-                  }
-                  onClick={() => onExpanderClick(t)}
+            {flatCols.map((col, colIndex) => {
+              const field = col.field ?? "";
+              let content: React.ReactNode;
+
+              if (field === "name") {
+                content = (
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: 16,
+                        cursor: "pointer",
+                        marginRight: 4,
+                        userSelect: "none",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onExpanderClick(task);
+                      }}
+                    >
+                      {expanderSymbol}
+                    </div>
+                    <div>{task.name}</div>
+                  </div>
+                );
+              } else {
+                const value = task.tableDatas?.[field];
+                content = formatCellValue(value);
+              }
+
+              return (
+                <td
+                  key={`${task.id}_${colIndex}`}
+                  className={col.cellClass ?? ""}
+                  style={{
+                    minWidth: col.minWidth || rowWidth,
+                    border: "1px solid #e6e4e4",
+                    padding: "4px",
+                    textAlign: "left",
+                    verticalAlign: "middle",
+                    ...(col.cellStyle || {}),
+                  }}
                 >
-                  {expanderSymbol}
-                </div>
-                <div>{t.name}</div>
-              </div>
-            </div>
-            <div
-              className={styles.taskListCell}
-              style={{
-                minWidth: rowWidth,
-                maxWidth: rowWidth,
-              }}
-            >
-              &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
-            </div>
-            <div
-              className={styles.taskListCell}
-              style={{
-                minWidth: rowWidth,
-                maxWidth: rowWidth,
-              }}
-            >
-              &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
-            </div>
-          </div>
+                  {col.cellRenderer ? col.cellRenderer(task) : content}
+                </td>
+              );
+            })}
+          </tr>
         );
       })}
-    </div>
+      </tbody>
+    </table>
   );
 };

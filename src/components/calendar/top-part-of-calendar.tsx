@@ -22,7 +22,7 @@ export const TopPartOfCalendar: React.FC<TopPartOfCalendarProps> = ({
     <g className="calendarTop">
       <line
         x1={x1Line}
-        y1={y1Line}
+        y1={y1Line+1}
         x2={x1Line}
         y2={y2Line}
         className={styles.calendarTopTick}

@@ -3,6 +3,7 @@ import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 import { getStartEndDateForProject, initTasks } from "./helper";
 import "gantt-task-react/dist/index.css";
+import { ColumnDef } from "../../src/types/public-types";
 
 // Init
 const App = () => {
@@ -67,6 +68,54 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
+  const colDefs: ColumnDef[] = [
+    {
+      headerName: "Name",
+      field : "name2",
+      cellClass : "testCellClass"
+    },
+    {
+      headerName: "Name",
+      field : "name2",
+    },
+    {
+      headerName: "Name",
+      field : "name2",
+    },
+    {
+      headerName: "Name",
+      field : "name2",
+    },
+    {
+      headerName: "Name",
+      field : "name2",
+    },
+    {
+      headerName: "Schedule",
+      children: [
+        { headerName: "Start", field: "start"},
+        { headerName: "End", field: "end"},
+      ],
+    },
+    {
+      headerName: "",
+      field : "button",
+      minWidth : '52px',
+      cellRenderer : (task) => {
+        return(
+          <button onClick={(e) =>{
+            e.stopPropagation();
+            alert(`Clicked task ${task.name}`)
+            console.log(task)
+          }}>
+            Click
+          </button>
+        )
+      }
+
+    },
+  ];
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -85,8 +134,8 @@ const App = () => {
         onClick={handleClick}
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
-        listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        colDefs={colDefs}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
@@ -102,6 +151,8 @@ const App = () => {
         listCellWidth={isChecked ? "155px" : ""}
         ganttHeight={300}
         columnWidth={columnWidth}
+        colDefs={colDefs}
+        rowHeight={30}
       />
     </div>
   );
