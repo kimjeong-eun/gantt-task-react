@@ -79,18 +79,6 @@ const App = () => {
       field : "name2",
     },
     {
-      headerName: "Name",
-      field : "name2",
-    },
-    {
-      headerName: "Name",
-      field : "name2",
-    },
-    {
-      headerName: "Name",
-      field : "name2",
-    },
-    {
       headerName: "Schedule",
       children: [
         { headerName: "Start", field: "start"},
@@ -136,6 +124,8 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         columnWidth={columnWidth}
         colDefs={colDefs}
+        headerHeight={100}
+        headerColor='red'
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt

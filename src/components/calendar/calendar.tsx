@@ -20,6 +20,7 @@ export type CalendarProps = {
   columnWidth: number;
   fontFamily: string;
   fontSize: string;
+  headerColor : string;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -31,6 +32,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   columnWidth,
   fontFamily,
   fontSize,
+  headerColor,
 }) => {
   const getCalendarValuesForYear = () => {
     const topValues: ReactChild[] = [];
@@ -157,7 +159,7 @@ export const Calendar: React.FC<CalendarProps> = ({
             y1Line={0}
             y2Line={topDefaultHeight}
             xText={xText}
-            yText={topDefaultHeight * 0.9}
+            yText={topDefaultHeight * 0.6}
           />
         );
       }
@@ -185,7 +187,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         <text
           key={date.getTime()}
           y={headerHeight * 0.8}
-          x={columnWidth * (i + +rtl)}
+          x={columnWidth * (i + +rtl) + columnWidth * 0.5}
           className={styles.calendarBottomText}
         >
           {bottomValue}
@@ -203,7 +205,7 @@ export const Calendar: React.FC<CalendarProps> = ({
               y1Line={0}
               y2Line={topDefaultHeight}
               xText={columnWidth * i + columnWidth * weeksCount * 0.5}
-              yText={topDefaultHeight * 0.9}
+              yText={topDefaultHeight * 0.6}
             />
           );
         }
@@ -254,7 +256,7 @@ export const Calendar: React.FC<CalendarProps> = ({
                 columnWidth *
                 0.5
             }
-            yText={topDefaultHeight * 0.9}
+            yText={topDefaultHeight * 0.6}
           />
         );
       }
@@ -388,7 +390,31 @@ export const Calendar: React.FC<CalendarProps> = ({
         width={columnWidth * dateSetup.dates.length}
         height={headerHeight}
         className={styles.calendarHeader}
+        style={{fill : headerColor ?? ''}}
       />
+      {/* 상단/하단 구분선 추가 */}
+      <line
+        x1={0}
+        y1={headerHeight * 0.5}
+        x2={columnWidth * dateSetup.dates.length}
+        y2={headerHeight * 0.5}
+        stroke="#ddd"
+        strokeWidth={1}
+      />
+
+      {/* bottomValue 간 수직선 */}
+      {dateSetup.dates.map((_, index) => (
+        <line
+          key={`bottom-divider-${index}`}
+          x1={columnWidth * index}
+          y1={headerHeight * 0.5}
+          x2={columnWidth * index}
+          y2={headerHeight}
+          stroke="#e6e4e4"
+          strokeWidth={1}
+        />
+      ))}
+
       {bottomValues} {topValues}
     </g>
   );
