@@ -21,7 +21,7 @@ export function initTasks() {
       baselineStart :  new Date('2025-06-01'),
       baselineEnd : new Date('2025-06-05'),
       baselineColor:'#de6565',
-      tableDatas : {
+      tableData : {
         name2 : 'test',
         status : 'test2',
         start :'2025-06-06',
@@ -40,7 +40,7 @@ export function initTasks() {
       baselineStart : new Date('2025-06-03'),
       baselineEnd : new Date('2025-06-08'),
       baselineColor:'#de6565',
-      tableDatas : {
+      tableData : {
         name2 : 'test',
         status : 'test2',
         start :'2025-06-06',
@@ -59,7 +59,7 @@ export function initTasks() {
       baselineStart : new Date('2025-06-03'),
       baselineEnd : new Date('2025-06-10'),
       baselineColor:'#de6565',
-      tableDatas : {
+      tableData : {
         name2 : 'test2',
         status : 'test2',
         start :'2025-06-06',
@@ -78,12 +78,6 @@ export function initTasks() {
       baselineStart : new Date('2025-06-03'),
       baselineEnd : new Date('2025-06-10'),
       baselineColor:'#de6565',
-      tableDatas : {
-        name2 : 'test2',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
-      }
     },
   ];
   return tasks;

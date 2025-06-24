@@ -108,7 +108,7 @@ export const TaskListTableDefault: React.FC<{
                   </div>
                 );
               } else {
-                const value = task.tableDatas?.[field];
+                const value = task.tableData?.[field];
                 content = formatCellValue(value);
               }
 

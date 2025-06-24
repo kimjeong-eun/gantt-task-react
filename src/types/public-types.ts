@@ -36,7 +36,7 @@ export interface Task {
   baselineStart?: Date;
   baselineEnd?: Date;
   baselineColor?: string;
-  tableDatas : Record<string, TableCellValue>;
+  tableData ?: Record<string, TableCellValue>;
 }
 
 //
