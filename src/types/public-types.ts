@@ -92,6 +92,8 @@ export interface EventOption {
    * Invokes on expander on task list
    */
   onExpanderClick?: (task: Task) => void;
+
+  onScrollYChange?: (y: number) => void;
 }
 
 export interface DisplayOption {
@@ -103,6 +105,7 @@ export interface DisplayOption {
    */
   locale?: string;
   rtl?: boolean;
+  externalScrollY?: number;
 }
 
 export interface StylingOption {

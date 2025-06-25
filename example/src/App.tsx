@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 import { getStartEndDateForProject, initTasks } from "./helper";
@@ -104,6 +104,13 @@ const App = () => {
     },
   ];
 
+  const [scrollY , setSctollY] = useState<number>(0);
+
+  const onScrollYChange =  (y : number) => {
+    console.log(scrollY , '~~~~~~~~~~~')
+    setSctollY(y);
+  }
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -138,10 +145,12 @@ const App = () => {
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
-        ganttHeight={100}
+        ganttHeight={200}
         columnWidth={columnWidth}
         colDefs={colDefs}
         rowHeight={30}
+        gridHeight={300}
+        onScrollYChange={onScrollYChange}
       />
     </div>
   );

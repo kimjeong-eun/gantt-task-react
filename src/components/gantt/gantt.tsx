@@ -68,6 +68,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   onExpanderClick,
   headerColor ='',
   gridHeight = 0,
+  externalScrollY = 0,
+  onScrollYChange
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -100,6 +102,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [scrollY, setScrollY] = useState(0);
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
+
+  //sync external scroll
+  useEffect(() => {
+    if (
+      typeof externalScrollY === "number" &&
+      externalScrollY !== scrollY
+    ) {
+      setScrollY(externalScrollY);
+    }
+  }, [externalScrollY]);
 
   // task change events
   useEffect(() => {
@@ -279,6 +291,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         }
         if (newScrollY !== scrollY) {
           setScrollY(newScrollY);
+          onScrollYChange?.(newScrollY);
           event.preventDefault();
         }
       }
@@ -301,11 +314,21 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     svgWidth,
     rtl,
     ganttFullHeight,
+    onScrollYChange
   ]);
 
   const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
-    if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
+/*    if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
       setScrollY(event.currentTarget.scrollTop);
+      setIgnoreScrollEvent(true);
+    } else {
+      setIgnoreScrollEvent(false);
+    }*/
+    const newScrollTop = event.currentTarget.scrollTop;
+
+    if (newScrollTop !== scrollY && !ignoreScrollEvent) {
+      setScrollY(newScrollTop);
+      onScrollYChange?.(newScrollTop); // 외부에 변경 알림
       setIgnoreScrollEvent(true);
     } else {
       setIgnoreScrollEvent(false);
