@@ -17,13 +17,13 @@ export type TaskListProps = {
   selectedTask: BarTask | undefined;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
-  colDefs: ColumnDef[];
+  colDefs ?: ColumnDef[];
   TaskListHeader: React.FC<{
     headerHeight: number;
     rowWidth: string;
     fontFamily: string;
     fontSize: string;
-    colDefs: ColumnDef[];
+    colDefs ?: ColumnDef[];
   }>;
   TaskListTable: React.FC<{
     rowHeight: number;
@@ -35,7 +35,7 @@ export type TaskListProps = {
     selectedTaskId: string;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
-    colDefs: ColumnDef[];
+    colDefs ?: ColumnDef[];
     selectedRowColor ?: string;
   }>;
 };

@@ -154,7 +154,6 @@ const App = () => {
         listCellWidth={isChecked ? "155px" : ""}
         ganttHeight={200}
         columnWidth={columnWidth}
-        colDefs={colDefs}
         rowHeight={30}
         gridHeight={300}
         onScrollYChange={onScrollYChange}

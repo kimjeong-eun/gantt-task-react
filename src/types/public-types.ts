@@ -148,7 +148,7 @@ export interface StylingOption {
     rowWidth: string;
     fontFamily: string;
     fontSize: string;
-    colDefs : ColumnDef[];
+    colDefs ?: ColumnDef[];
   }>;
   TaskListTable?: React.FC<{
     rowHeight: number;
@@ -163,12 +163,12 @@ export interface StylingOption {
      */
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
-    colDefs : ColumnDef[];
+    colDefs ?: ColumnDef[];
   }>;
 }
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
-  colDefs : ColumnDef[];
+  colDefs ?: ColumnDef[];
   selectedTaskId ?:string;
 }

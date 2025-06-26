@@ -6,12 +6,13 @@ export const TaskListHeaderDefault: React.FC<{
   rowWidth: string;
   fontFamily: string;
   fontSize: string;
-  colDefs: ColumnDef[];
+  colDefs ?: ColumnDef[];
 }> = ({ headerHeight, fontFamily, fontSize, rowWidth, colDefs }) => {
   const totalDepth = getHeaderDepth(colDefs);
 
   // 헤더 전체 깊이 계산
-  function getHeaderDepth(cols: ColumnDef[]): number {
+  function getHeaderDepth(cols ?: ColumnDef[]): number {
+    if (!cols || cols.length === 0) return 0;
     return cols.reduce((max, col) => {
       const childDepth = col.children ? getHeaderDepth(col.children) + 1 : 1;
       return Math.max(max, childDepth);
@@ -25,7 +26,8 @@ export const TaskListHeaderDefault: React.FC<{
   }
 
   // level별로 colDef 배열을 나눔
-  function flattenByLevel(columns: ColumnDef[], level = 0, result: ColumnDef[][] = []) {
+  function flattenByLevel(columns ?: ColumnDef[], level = 0, result: ColumnDef[][] = []) {
+    if (!columns) return result;
     if (!result[level]) result[level] = [];
     for (const col of columns) {
       result[level].push(col);
