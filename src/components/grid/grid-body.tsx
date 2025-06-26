@@ -144,6 +144,17 @@ export const GridBody: React.FC<GridBodyProps> = ({
     }
     tickX += columnWidth;
   }
+  // 마지막 열 끝에 수직선 추가
+  ticks.push(
+    <line
+      key="FinalTick"
+      x1={tickX}
+      y1={0}
+      x2={tickX}
+      y2={y}
+      className={styles.gridTick}
+    />
+  );
   return (
     <g className="gridBody">
       <g className="rows">{gridRows}</g>

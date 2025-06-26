@@ -124,8 +124,18 @@ export const ganttDateRange = (
     case ViewMode.Day:
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
-      newEndDate = startOfDate(newEndDate, "day");
-      newEndDate = addToDate(newEndDate, 19, "day");
+  /*    newEndDate = startOfDate(newEndDate, "day");
+      newEndDate = addToDate(newEndDate, 19, "day");*/
+      const lastDay = getDaysInMonth(newEndDate.getMonth(), newEndDate.getFullYear());
+      newEndDate = new Date(
+        newEndDate.getFullYear(),
+        newEndDate.getMonth(),
+        lastDay,
+        23,
+        59,
+        59,
+        999
+      );
       break;
     case ViewMode.QuarterDay:
       newStartDate = startOfDate(newStartDate, "day");
