@@ -111,6 +111,7 @@ const App = () => {
     setSctollY(y);
   }
 
+  const [selectedTaskId , setSelectedTaskId] = useState<string>('1');
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -118,6 +119,9 @@ const App = () => {
         onViewListChange={setIsChecked}
         isChecked={isChecked}
       />
+      <button onClick={()=>{
+        setSelectedTaskId('3')
+      }}>props change</button>
       <h3>Gantt With Unlimited Height</h3>
       <Gantt
         tasks={tasks}
@@ -132,6 +136,7 @@ const App = () => {
         columnWidth={columnWidth}
         colDefs={colDefs}
         headerHeight={100}
+        selectedTaskId={selectedTaskId}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt

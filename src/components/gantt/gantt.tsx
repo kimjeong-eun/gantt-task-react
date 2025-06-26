@@ -69,7 +69,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   headerColor ='',
   gridHeight = 0,
   externalScrollY = 0,
-  onScrollYChange
+  onScrollYChange,
+  selectedTaskId =''
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -112,6 +113,18 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       setScrollY(externalScrollY);
     }
   }, [externalScrollY]);
+
+  //
+  useEffect(() => {
+    if (!selectedTaskId) return;
+
+    const alreadySelected = selectedTask?.id === selectedTaskId;
+    const found = barTasks.find(t => t.id === selectedTaskId);
+
+    if (!alreadySelected && found) {
+      handleSelectedTask(selectedTaskId);
+    }
+  }, [selectedTaskId, barTasks]);
 
   // task change events
   useEffect(() => {
