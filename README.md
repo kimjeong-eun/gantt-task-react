@@ -1,4 +1,4 @@
-# gantt-task-react-custom
+# gantt-task-react-plus
 
 📌 This is a customized fork of [gantt-task-react](https://github.com/MaTeMaTuK/gantt-task-react).
 
