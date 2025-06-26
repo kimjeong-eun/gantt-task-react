@@ -2,13 +2,20 @@
   "name": "gantt-task-react-custom",
   "version": "0.1.6",
   "description": "A customized version of gantt-task-react with baseline support.",
-  "author": "jeongeun kim <jeongeun587@gmail.com>",
+  "author": "Jeongeun Kim <jeongeun587@gmail.com>",
   "homepage": "https://github.com/kimjeong-eun/gantt-task-react",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/kimjeong-eun/gantt-task-react.git"
   },
+  "contributors": [
+    {
+      "name": "Maksym Vikarii",
+      "url": "https://github.com/MaTeMaTuK",
+      "contributions": "Original author of gantt-task-react"
+    }
+  ],
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
@@ -64,6 +71,7 @@
     "typescript": "^4.7.4"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ]
 }
