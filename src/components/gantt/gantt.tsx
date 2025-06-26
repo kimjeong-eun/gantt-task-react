@@ -114,7 +114,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [externalScrollY]);
 
-  //
+  //init task id
   useEffect(() => {
     if (!selectedTaskId) return;
 
@@ -122,7 +122,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     const found = barTasks.find(t => t.id === selectedTaskId);
 
     if (!alreadySelected && found) {
+      setScrollX(found.x1 + (found.x2 - found.x1) / 2 - svgContainerWidth / 2);
+      setIgnoreScrollEvent(true);
       handleSelectedTask(selectedTaskId);
+    } else{
+      setIgnoreScrollEvent(false);
     }
   }, [selectedTaskId, barTasks]);
 
