@@ -152,10 +152,8 @@ const App = () => {
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
-        ganttHeight={200}
         columnWidth={columnWidth}
         rowHeight={30}
-        gridHeight={300}
         onScrollYChange={onScrollYChange}
       />
     </div>

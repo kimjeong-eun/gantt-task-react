@@ -45,8 +45,14 @@ export const TaskListTableDefault: React.FC<{
       }) => {
   const toLocaleDateString = useMemo(() => toLocaleDateStringFactory(locale), [locale]);
 
+  const defaultColDefs: ColumnDef[] = [
+    { field: "name", headerName: "Name" },
+    { field: "start", headerName: "From" },
+    { field: "end", headerName: "To" },
+  ];
+
   const flattenColDefs = (defs?: ColumnDef[]): ColumnDef[] =>
-    (defs ?? []).flatMap((def) =>
+    (defs && defs.length > 0 ? defs : defaultColDefs).flatMap((def) =>
       def.children?.length ? def.children : [def]
     );
 
@@ -54,7 +60,7 @@ export const TaskListTableDefault: React.FC<{
 
   const formatCellValue = (value: TableCellValue): React.ReactNode => {
     if (value instanceof Date) {
-      return toLocaleDateString(value, dateTimeOptions);flattenColDefs
+      return toLocaleDateString(value, dateTimeOptions);
     }
     return value;
   };

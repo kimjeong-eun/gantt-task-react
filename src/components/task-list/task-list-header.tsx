@@ -6,12 +6,19 @@ export const TaskListHeaderDefault: React.FC<{
   rowWidth: string;
   fontFamily: string;
   fontSize: string;
-  colDefs ?: ColumnDef[];
+  colDefs?: ColumnDef[];
 }> = ({ headerHeight, fontFamily, fontSize, rowWidth, colDefs }) => {
-  const totalDepth = getHeaderDepth(colDefs);
+  const defaultColDefs: ColumnDef[] = [
+    { field: "name", headerName: "Name" },
+    { field: "start", headerName: "From" },
+    { field: "end", headerName: "To" },
+  ];
 
-  // 헤더 전체 깊이 계산
-  function getHeaderDepth(cols ?: ColumnDef[]): number {
+  const effectiveColDefs = colDefs && colDefs.length > 0 ? colDefs : defaultColDefs;
+
+  const totalDepth = getHeaderDepth(effectiveColDefs);
+
+  function getHeaderDepth(cols?: ColumnDef[]): number {
     if (!cols || cols.length === 0) return 0;
     return cols.reduce((max, col) => {
       const childDepth = col.children ? getHeaderDepth(col.children) + 1 : 1;
@@ -19,14 +26,12 @@ export const TaskListHeaderDefault: React.FC<{
     }, 0);
   }
 
-  // 각 column이 차지할 leaf node 개수 (colSpan 용)
   function getLeafCount(col: ColumnDef): number {
     if (!col.children || col.children.length === 0) return 1;
     return col.children.reduce((sum, child) => sum + getLeafCount(child), 0);
   }
 
-  // level별로 colDef 배열을 나눔
-  function flattenByLevel(columns ?: ColumnDef[], level = 0, result: ColumnDef[][] = []) {
+  function flattenByLevel(columns?: ColumnDef[], level = 0, result: ColumnDef[][] = []) {
     if (!columns) return result;
     if (!result[level]) result[level] = [];
     for (const col of columns) {
@@ -38,7 +43,7 @@ export const TaskListHeaderDefault: React.FC<{
     return result;
   }
 
-  const headerRows = flattenByLevel(colDefs);
+  const headerRows = flattenByLevel(effectiveColDefs);
 
   return (
     <table
@@ -65,7 +70,7 @@ export const TaskListHeaderDefault: React.FC<{
                 style={{
                   minWidth: col.minWidth || rowWidth,
                   border: "1px solid #ddd",
-                  borderBottom : "none",
+                  borderBottom: "none",
                   padding: "4px",
                   textAlign: "center",
                   ...(col.headerStyle || {}),
