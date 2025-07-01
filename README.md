@@ -8,6 +8,13 @@
 - 🎨 Baseline color customization
 - 📆 Extended date range calculation
 - 🛠 Additional Calendar refinements
+- 📌 New Task properties:
+  ```
+  baselineStart?: Date;
+  baselineEnd?: Date;
+  baselineColor?: string;
+  ```
+
 
 ### License
 
