@@ -256,32 +256,47 @@ export const getWeekNumberISO8601 = (date: Date) => {
 };
 
 export function getWeekOfMonthKSIso8601(date: Date): number {
-  const year = date.getFullYear();
-  const month = date.getMonth();
+  // 주를 계산하는 로직입니다.
+  // 한국의 주간 수 결정법 표준에 따라, 한주의 시작은 '월요일'이며,
+  // 매월 첫째주, 마지막 주의 구분하는 기준은 그 주간의 과반수를 차지하고 있는가에 따라 계산됩니다.
 
-  const firstDayOfMonth = new Date(year, month, 1);
-  const day = firstDayOfMonth.getDay(); // 0(일) ~ 6(토)
+  // 주차의 날짜 리스트 생성..
+  const weekDates: Date[] = [];
+  const startOfWeek = new Date(date);
+  startOfWeek.setDate(date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1)); // 월요일로 보정
 
-  const firstMonday =
-    day === 1
-      ? new Date(firstDayOfMonth)
-      : new Date(firstDayOfMonth.getTime() + (((8 - (day || 7)) % 7) * 86400000));
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    weekDates.push(d);
+  }
 
-  const diffInMs = date.getTime() - firstMonday.getTime();
-  const daysSinceFirstMonday = Math.floor(diffInMs / 86400000);
+  // 각 월별 날짜 수 계산
+  const monthCount = new Map<number, number>();
+  for (const d of weekDates) {
+    const m = d.getMonth();
+    monthCount.set(m, (monthCount.get(m) || 0) + 1);
+  }
 
-  const week = Math.floor(daysSinceFirstMonday / 7) + 1;
-
-  if (firstMonday.getMonth() !== month) {
-    const daysInFirstWeekInThisMonth = 7 - firstMonday.getDate() + 1;
-    if (daysInFirstWeekInThisMonth < 4) {
-      return week;
-    } else {
-      return week + 1;
+  // 가장 많이 포함된 월 선택
+  let maxMonth = date.getMonth();
+  let maxCount = 0;
+  // @ts-ignore
+  for (const [m, c] of monthCount.entries()) {
+    if (c > maxCount) {
+      maxMonth = m;
+      maxCount = c;
     }
   }
 
-  return week;
+  // 기준 월의 첫 주차를 찾아서 현재 주차 구함
+  const firstOfMonth = new Date(date.getFullYear(), maxMonth, 1);
+  const firstDay = firstOfMonth.getDay() === 0 ? 7 : firstOfMonth.getDay(); // 일요일 보정
+  const firstMonday = new Date(firstOfMonth);
+  firstMonday.setDate(firstOfMonth.getDate() + (firstDay <= 4 ? -firstDay + 1 : 8 - firstDay));
+
+  const diffDays = Math.floor((startOfWeek.getTime() - firstMonday.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.floor(diffDays / 7) + 1;
 }
 
 export const getDaysInMonth = (month: number, year: number) => {
