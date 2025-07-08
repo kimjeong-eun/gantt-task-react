@@ -167,6 +167,21 @@ export const Calendar: React.FC<CalendarProps> = ({
     return [topValues, bottomValues];
   };
 
+  //
+  const getMaxWeekOfMonth =(year: number, month: number): number => {
+    const weeks = new Set<number>();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const week = getWeekOfMonthKSIso8601(date);
+      if (week > 0) {
+        weeks.add(week);
+      }
+    }
+    return Math.max(...Array.from(weeks));
+  }
+
   const getCalendarValuesForWeek = () => {
     //
     const topValues: ReactChild[] = [];
@@ -182,11 +197,12 @@ export const Calendar: React.FC<CalendarProps> = ({
 
       //
       if (week === 1) {
+
         // 주 시작일 계산 (월요일 기준)
         const monday = new Date(date);
         monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
 
-        // 해당 주에 포함된 날짜 계산
+        //
         const weekDates: Date[] = [];
         for (let j = 0; j < 7; j++) {
           const d = new Date(monday);
@@ -194,14 +210,14 @@ export const Calendar: React.FC<CalendarProps> = ({
           weekDates.push(d);
         }
 
-        // 각 월별 포함 개수 계산
+        //
         const monthCount = new Map<number, number>();
         for (const d of weekDates) {
           const m = d.getMonth();
           monthCount.set(m, (monthCount.get(m) || 0) + 1);
         }
 
-        // 가장 많이 포함된 달 찾기
+        //
         let maxMonth = -1;
         let maxCount = 0;
         for (const [m, c] of Array.from(monthCount.entries())) {
@@ -217,6 +233,8 @@ export const Calendar: React.FC<CalendarProps> = ({
           labelDate.setMonth(maxMonth);
           const topValue = `${getLocaleMonth(labelDate, locale)}, ${labelDate.getFullYear()}`;
 
+          const _xText = getMaxWeekOfMonth(labelDate.getFullYear(), labelDate.getMonth());
+
           topValues.push(
             <TopPartOfCalendar
               key={`top-${labelKey}`}
@@ -224,7 +242,7 @@ export const Calendar: React.FC<CalendarProps> = ({
               x1Line={columnWidth * i}
               y1Line={0}
               y2Line={topDefaultHeight}
-              xText={columnWidth * i + columnWidth* (monthCount.get(labelDate.getMonth()) ?? 1) * 0.4}
+              xText={columnWidth * i + columnWidth *_xText * 0.5}
               yText={topDefaultHeight * 0.6}
             />
           );
