@@ -255,7 +255,7 @@ export const getWeekNumberISO8601 = (date: Date) => {
   }
 };
 
-export function getWeekOfMonthKSIso8601(date: Date): number {
+export function getWeekOfMonthKSIso8601(date: Date): { month: number; week: number } {
   // 주를 계산하는 로직입니다.
   // 한국의 주간 수 결정법 표준에 따라, 한주의 시작은 '월요일'이며,
   // 매월 첫째주, 마지막 주의 구분하는 기준은 그 주간의 과반수를 차지하고 있는가에 따라 계산됩니다.
@@ -296,7 +296,11 @@ export function getWeekOfMonthKSIso8601(date: Date): number {
   firstMonday.setDate(firstOfMonth.getDate() + (firstDay <= 4 ? -firstDay + 1 : 8 - firstDay));
 
   const diffDays = Math.floor((startOfWeek.getTime() - firstMonday.getTime()) / (1000 * 60 * 60 * 24));
-  return Math.floor(diffDays / 7) + 1;
+  return {
+    month : maxMonth,
+    week : Math.floor(diffDays / 7) + 1
+  }
+
 }
 
 export const getDaysInMonth = (month: number, year: number) => {

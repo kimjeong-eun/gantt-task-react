@@ -174,8 +174,9 @@ export const Calendar: React.FC<CalendarProps> = ({
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const week = getWeekOfMonthKSIso8601(date);
-      if (week > 0) {
+      const targetMonth =  getWeekOfMonthKSIso8601(date).month;
+      const week = getWeekOfMonthKSIso8601(date).week;
+      if (week > 0 && targetMonth == month) {
         weeks.add(week);
       }
     }
@@ -192,7 +193,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
-      const week = getWeekOfMonthKSIso8601(date);
+      const week = getWeekOfMonthKSIso8601(date).week;
       if (week === 0) continue;
 
       //
