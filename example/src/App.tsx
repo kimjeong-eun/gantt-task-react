@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 import { getStartEndDateForProject, initTasks } from "./helper";
@@ -10,7 +10,7 @@ const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
-  let columnWidth = 65;
+  let columnWidth = 110;
   if (view === ViewMode.Year) {
     columnWidth = 350;
   } else if (view === ViewMode.Month) {
@@ -68,50 +68,37 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
-  const colDefs: ColumnDef[] = [
+  const colDef : ColumnDef[] = [
     {
-      headerName: "Name",
-      field : "name2",
-      cellClass : "testCellClass"
-    },
-    {
-      headerName: "Name",
-      field : "name2",
-    },
-    {
-      headerName: "Schedule",
-      children: [
-        { headerName: "Start", field: "start"},
-        { headerName: "End", field: "end"},
-      ],
+      headerName : "",
+      field : "phase",
+      headerStyle : {minWidth : '20px'},
+      cellStyle : { minWidth : '20px'}
+
     },
     {
       headerName: "",
-      field : "button",
-      minWidth : '52px',
-      cellRenderer : (task) => {
-        return(
-          <button onClick={(e) =>{
-            e.stopPropagation();
-            alert(`Clicked task ${task.name}`)
-            console.log(task)
-          }}>
-            Click
-          </button>
-        )
-      }
+      field : "discipline"
+    }
+  ]
 
-    },
-  ];
+  const tooltipContents = ({ task, fontSize, fontFamily }: {
+    task: Task;
+    fontSize: string;
+    fontFamily: string;
+  }) => {
+    return (
+      <div style={{ fontSize, fontFamily ,
+        background: '#fff',
+        padding: '12px',
+        boxShadow : '0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)'}}>
+        {task.start.toString()}
+      </div>
+    );
+  };
 
-  const [scrollY , setSctollY] = useState<number>(0);
 
-  const onScrollYChange =  (y : number) => {
-    console.log(scrollY , '~~~~~~~~~~~')
-    setSctollY(y);
-  }
 
-  const [selectedTaskId , setSelectedTaskId] = useState<string>('1');
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -119,31 +106,10 @@ const App = () => {
         onViewListChange={setIsChecked}
         isChecked={isChecked}
       />
-      <button onClick={()=>{
-        setSelectedTaskId('3')
-      }}>props change</button>
-
-
-      <h3>Gantt With Unlimited Height</h3>
+      <h3>Gantt Custom TimeLine</h3>
       <Gantt
         tasks={tasks}
-        viewMode={view}
-        onDateChange={handleTaskChange}
-        onDelete={handleTaskDelete}
-        onProgressChange={handleProgressChange}
-        onDoubleClick={handleDblClick}
-        onClick={handleClick}
-        onSelect={handleSelect}
-        onExpanderClick={handleExpanderClick}
-        columnWidth={columnWidth}
-        colDefs={colDefs}
-        headerHeight={100}
-        selectedTaskId={selectedTaskId}
-      />
-      <h3>Gantt With Limited Height</h3>
-      <Gantt
-        tasks={tasks}
-        viewMode={view}
+        viewMode={ViewMode.Month}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}
         onProgressChange={handleProgressChange}
@@ -153,8 +119,10 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
-        rowHeight={30}
-        onScrollYChange={onScrollYChange}
+        rowHeight={60}
+        colDefs={colDef}
+        todayColor={'none'}
+        TooltipContent={tooltipContents}
       />
     </div>
   );

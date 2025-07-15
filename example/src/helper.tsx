@@ -3,216 +3,304 @@ import { Task } from "../../dist/types/public-types";
 export function initTasks() {
 /*
   const currentDate = new Date();
+  FFA834
 */
   const tasks: Task[] = [
     {
-      id:'1-1',
-      name :'Project1',
-      type: "project",
-      start: new Date('2025-06-01'),
-      end: new Date('2025-06-10'),
-      progress: 1,
-      hideChildren :false,
-      isDisabled : true
-    },
-    {
-      id: '1',
-      name: 'Design',
-      start: new Date('2025-06-01'),
-      end: new Date('2025-06-09'),
+      id: 'empty-1',
+      name: '',
+      start: new Date('2025-01-01'),
+      end: new Date('2025-01-30'),
       type: 'task',
       progress: 70,
       styles: {
-        progressColor: '#5aa9e6', //bar progress color
-        backgroundColor: '#5aa9e6', // bar background color
-        defaultRowColor :'', //default row color (table)
-        selectedRowColor : '#5aa9e6' // selected row color (table)
+        backgroundColor :'none',
+        progressColor: 'none',
+        progressSelectedColor : 'none',
+        backgroundSelectedColor :'none',
       },
-      baselineStart :  new Date('2025-06-01'),
-      baselineEnd : new Date('2025-06-05'),
-      baselineColor:'#de6565',
       tableData : {
-        name2 : 'test',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
+        phase : 'Engineering',
+        discipline: 'Machinary'
       },
-      project :'1-1',
       isDisabled : true,
     },
     {
       id: '2',
-      name: 'Development',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-09'),
+      name: 'Place Holder',
+      start: new Date('2025-01-01'),
+      end: new Date('2025-01-30'),
       type: 'task',
       progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
+      styles: {
+        backgroundColor :'#C0C0C0',
+        progressColor: '#C0C0C0',
+        progressSelectedColor : '#C0C0C0',
+        backgroundSelectedColor :'#C0C0C0' },
       dependencies: ['1'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-08'),
-      baselineColor:'#de6565',
+      isDisabled : true,
       tableData : {
-        name2 : 'test',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
+        phase : 'Engineering',
+        discipline: 'Civil'
       },
-      project :'1-1',
-      isDisabled : true
     },
     {
       id: '3',
-      name: 'Development',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-12'),
+      name: 'Receive Order',
+      start: new Date('2025-09-09'),
+      end: new Date('2025-09-30'),
       type: 'task',
       progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
-      dependencies: ['1'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-10'),
-      baselineColor:'#de6565',
+      styles: {
+        backgroundColor :'#D4E3FC',
+        progressColor: '#D4E3FC',
+        progressSelectedColor : '#D4E3FC',
+        backgroundSelectedColor :'#D4E3FC'},
+      dependencies: ['2' , '6'],
       tableData : {
-        name2 : 'test2',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
+        phase : 'Engineering',
+        discipline: 'Mechanical'
       },
-      project :'1-1',
       isDisabled : true
     },
     {
       id: '4',
-      name: 'Development2',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-12'),
+      name: '',
+      start: new Date('2025-09-06'),
+      end: new Date('2025-10-12'),
       type: 'task',
       progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
-      dependencies: ['1'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-10'),
-      baselineColor:'#de6565',
-      project :'1-1',
-      isDisabled : true
-    },
-    {
-      id:'1-2',
-      name :'Project2',
-      type: "project",
-      start: new Date('2025-06-01'),
-      end: new Date('2025-06-10'),
-      progress: 1,
-      hideChildren :false,
-      dependencies: ['1-1'],
-      isDisabled : true
+      styles: {
+        backgroundColor :'none',
+        progressColor: 'none',
+        progressSelectedColor : 'none',
+        backgroundSelectedColor :'none'},
+      isDisabled : true,
+      tableData : {
+        phase : 'Engineering',
+        discipline: 'Electrical'
+      },
     },
     {
       id: '5',
-      name: 'Design',
-      start: new Date('2025-06-01'),
-      end: new Date('2025-06-09'),
+      name: 'Manage availability',
+      start: new Date('2025-02-27'),
+      end: new Date('2025-03-25'),
       type: 'task',
       progress: 70,
       styles: {
-        progressColor: '#5aa9e6', //bar progress color
-        backgroundColor: '#5aa9e6', // bar background color
-        defaultRowColor :'', //default row color (table)
-        selectedRowColor : '#5aa9e6' // selected row color (table)
+        backgroundColor :'#C0C0C0',
+        progressColor: '#C0C0C0',
+        progressSelectedColor : '#C0C0C0',
+        backgroundSelectedColor :'#C0C0C0'
       },
-      baselineStart :  new Date('2025-06-01'),
-      baselineEnd : new Date('2025-06-05'),
-      baselineColor:'#de6565',
       tableData : {
-        name2 : 'test',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
+        phase : 'Procurement',
+        discipline: 'Machinary'
       },
-      project :'1-2',
-      isDisabled : true
-    },
-    {
-      id: '6',
-      name: 'Development',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-09'),
-      type: 'task',
-      progress: 50,
-      styles: {
-        progressColor: '#f87060',
-        backgroundColor: '#f87060',
-        selectedRowColor : '#5aa9e6'},
-      dependencies: ['5'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-08'),
-      baselineColor:'#de6565',
-      tableData : {
-        name2 : 'test',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
-      },
-      project :'1-2',
-      isDisabled : true
-    },
-    {
-      id: '7',
-      name: 'Development',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-12'),
-      type: 'task',
-      progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
-      dependencies: ['5'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-10'),
-      baselineColor:'#de6565',
-      tableData : {
-        name2 : 'test2',
-        status : 'test2',
-        start :'2025-06-06',
-        end :'2025-06-09'
-      },
-      project :'1-2',
+      dependencies: ['2'],
+      isDisabled : true,
+      siblingTasks : [
+        {
+          id: '6',
+          name: 'Adjust stock levels',
+          start: new Date('2025-07-02'),
+          end: new Date('2025-07-30'),
+          type: 'task',
+          progress: 50,
+          styles: {
+            backgroundColor :'#D4E3FC',
+            progressColor: '#D4E3FC',
+            progressSelectedColor : '#D4E3FC',
+            backgroundSelectedColor :'#D4E3FC'
+          },
+          dependencies :['10'],
+          isDisabled : true,
+        },
+      ]
     },
     {
       id: '8',
-      name: 'Development2',
-      start: new Date('2025-06-06'),
-      end: new Date('2025-06-12'),
+      name: 'Generate pick ticket',
+      start: new Date('2025-04-15'),
+      end: new Date('2025-05-15'),
       type: 'task',
-      progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
+      progress: 70,
+      styles: {
+        backgroundColor :'#FFA834',
+        progressColor: '#FFA834',
+        progressSelectedColor : '#FFA834',
+        backgroundSelectedColor :'#FFA834'
+      },
+      tableData : {
+        phase : 'Procurement',
+        discipline: 'Civil'
+      },
       dependencies: ['5'],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-10'),
-      baselineColor:'#de6565',
-      project :'1-2',
+      isDisabled : true,
     },
     {
       id: '9',
-      name: 'Development2',
-      start: new Date('2025-06-30'),
-      end: new Date('2025-07-04'),
+      name: 'Empty-3',
+      start: new Date('2025-11-01'),
+      end: new Date('2025-12-09'),
       type: 'task',
-      progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
-      dependencies: ['5'],
-      baselineStart : new Date('2025-06-30'),
-      baselineEnd : new Date('2025-07-04'),
-      baselineColor:'#de6565',
-      project :'1-2',
+      progress: 70,
+      styles: {
+        backgroundColor :'none',
+        progressColor: 'none',
+        progressSelectedColor : 'none',
+        backgroundSelectedColor :'none'
+      },
+      tableData : {
+        phase : 'Procurement',
+        discipline: 'Mechanical'
+      },
+      isDisabled : true,
     },
     {
       id: '10',
-      name: 'Development2',
-      start: new Date('2025-09-01'),
-      end: new Date('2025-10-01'),
+      name: 'Coordinate with cargoagency',
+      start: new Date('2025-05-24'),
+      end: new Date('2025-06-30'),
       type: 'task',
       progress: 50,
-      styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
+      styles: {
+        backgroundColor :'#D4E3FC',
+        progressColor: '#D4E3FC',
+        progressSelectedColor : '#D4E3FC',
+        backgroundSelectedColor :'#D4E3FC'},
+      dependencies: ['8'],
+      isDisabled : true,
+      tableData : {
+        phase : 'Procurement',
+        discipline: 'Electrical'
+      },
+    },
+    {
+      id: '11',
+      name: 'Prepare order for shipping',
+      start: new Date('2025-02-27'),
+      end: new Date('2025-03-20'),
+      type: 'task',
+      progress: 50,
+      styles: {
+        backgroundColor :'#C0C0C0',
+        progressColor: '#C0C0C0',
+        progressSelectedColor : '#C0C0C0',
+        backgroundSelectedColor :'#C0C0C0'},
+      isDisabled : true,
+      tableData : {
+        phase : 'Construction',
+        discipline: 'Machinary'
+      },
+      dependencies: ['5']
+    },
+    {
+      id: '12',
+      name: 'Print shipping labels',
+      start: new Date('2025-06-01'),
+      end: new Date('2025-06-30'),
+      type: 'task',
+      progress: 50,
+      styles: {
+        backgroundColor :'#D4E3FC',
+        progressColor: '#D4E3FC',
+        progressSelectedColor : '#D4E3FC',
+        backgroundSelectedColor :'#D4E3FC'},
+      isDisabled : true,
+      tableData : {
+        phase : 'Construction',
+        discipline: 'Civil'
+      },
+      dependencies: ['15'],
+      siblingTasks: [
+        {
+          id: '13',
+          name: 'Load trucks',
+          start: new Date('2025-07-15'),
+          end: new Date('2025-08-20'),
+          type: 'task',
+          progress: 50,
+          styles: {
+            backgroundColor :'#D4E3FC',
+            progressColor: '#D4E3FC',
+            progressSelectedColor : '#D4E3FC',
+            backgroundSelectedColor :'#D4E3FC'},
+          isDisabled : true,
+          dependencies: ['12']
+        },
+        {
+          id: '14',
+          name: 'Ship Order',
+          start: new Date('2025-09-02'),
+          end: new Date('2025-09-20'),
+          type: 'task',
+          progress: 50,
+          styles: {
+            backgroundColor :'#D4E3FC',
+            progressColor: '#D4E3FC',
+            progressSelectedColor : '#D4E3FC',
+            backgroundSelectedColor :'#D4E3FC'},
+          isDisabled : true,
+          dependencies: ['13']
+        }
+      ]
+    },
+    {
+      id: '15',
+      name: 'Wait Packages',
+      start: new Date('2025-04-15'),
+      end: new Date('2025-05-15'),
+      type: 'task',
+      progress: 50,
+      styles: {
+        backgroundColor :'#FFA834',
+        progressColor: '#FFA834',
+        progressSelectedColor : '#FFA834',
+        backgroundSelectedColor :'#FFA834'},
+      isDisabled : true,
+      tableData : {
+        phase : 'Construction',
+        discipline: 'Mechanical'
+      },
+      dependencies: ['11'],
+      siblingTasks: [
+        {
+          id: '16',
+          name: 'Realease invoice',
+          start: new Date('2025-10-09'),
+          end: new Date('2025-11-10'),
+          type: 'task',
+          progress: 50,
+          styles: {
+            backgroundColor :'#D4E3FC',
+            progressColor: '#D4E3FC',
+            progressSelectedColor : '#D4E3FC',
+            backgroundSelectedColor :'#D4E3FC'},
+          isDisabled : true,
+          dependencies: ['14','17' ,'3' ]
+        },
+      ]
+    },
+    {
+      id: '17',
+      name: 'Tracking Orders',
+      start: new Date('2025-09-01'),
+      end: new Date('2025-09-20'),
+      type: 'task',
+      progress: 50,
+      styles: {
+        backgroundColor :'#D4E3FC',
+        progressColor: '#D4E3FC',
+        progressSelectedColor : '#D4E3FC',
+        backgroundSelectedColor :'#D4E3FC'},
+      isDisabled : true,
+      tableData : {
+        phase : 'Construction',
+        discipline: 'Electrical'
+      },
+      dependencies: ['13' ]
     },
   ];
   return tasks;

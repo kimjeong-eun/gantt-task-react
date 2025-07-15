@@ -17,7 +17,7 @@ import { VerticalScroll } from "../other/vertical-scroll";
 import { TaskListProps, TaskList } from "../task-list/task-list";
 import { TaskGantt } from "./task-gantt";
 import { BarTask } from "../../types/bar-task";
-import { convertToBarTasks } from "../../helpers/bar-helper";
+import { convertToBarTasks, overlappingCount } from "../../helpers/bar-helper";
 import { GanttEvent } from "../../types/gantt-task-actions";
 import { DateSetup } from "../../types/date-setup";
 import { HorizontalScroll } from "../other/horizontal-scroll";
@@ -98,7 +98,14 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
 
   const svgWidth = dateSetup.dates.length * columnWidth;
-  const ganttFullHeight = gridHeight ? gridHeight :  barTasks.length * rowHeight;
+  const ganttFullHeight = gridHeight ? gridHeight :
+    ( barTasks.map((barTask)=>{
+    if (barTask.siblingBarTasks && barTask.siblingBarTasks.length > 0){
+      return barTask.siblingBarTasks.length ?? 0;
+    } else
+      return 0;
+  }).reduce((total:number , target:number) => total + target ,0) + barTasks.length ) * rowHeight;
+
 
   const [scrollY, setScrollY] = useState(0);
   const [scrollX, setScrollX] = useState(-1);
@@ -282,7 +289,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     if (ganttHeight) {
       setSvgContainerHeight(ganttHeight + headerHeight);
     } else {
-      setSvgContainerHeight(tasks.length * rowHeight + headerHeight);
+      const dynamicHeight =
+        gridHeight ||
+        rowHeight * (tasks.reduce((total, task) => {
+          return (
+            total +
+            1 +
+            (task.siblingTasks ? overlappingCount(task) : 0)
+          );
+        }, 0));
+      setSvgContainerHeight(dynamicHeight);
     }
   }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
@@ -411,10 +427,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
    * Task select event
    */
   const handleSelectedTask = (taskId: string) => {
-    const newSelectedTask = barTasks.find(t => t.id === taskId);
-    const oldSelectedTask = barTasks.find(
+    const allTasks = barTasks.flatMap(t => [t, ...(t.siblingBarTasks ?? [])]);
+
+    const newSelectedTask = allTasks.find(t => t.id === taskId);
+    const oldSelectedTask = allTasks.find(
       t => !!selectedTask && t.id === selectedTask.id
     );
+
     if (onSelect) {
       if (oldSelectedTask) {
         onSelect(oldSelectedTask, false);
@@ -423,6 +442,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         onSelect(newSelectedTask, true);
       }
     }
+
     setSelectedTask(newSelectedTask);
   };
   const handleExpanderClick = (task: Task) => {

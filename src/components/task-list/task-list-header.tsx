@@ -71,8 +71,8 @@ export const TaskListHeaderDefault: React.FC<{
                   minWidth: col.minWidth || rowWidth,
                   border: "1px solid #ddd",
                   borderBottom: "none",
-                  padding: "4px",
                   textAlign: "center",
+                  padding : "0px",
                   ...(col.headerStyle || {}),
                 }}
               >

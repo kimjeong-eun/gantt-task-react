@@ -20,6 +20,7 @@ export interface BarTask extends Task {
   };
   xBaseline1?: number; // 좌측 x 좌표
   xBaseline2?: number; // 우측 x 좌표
+  siblingBarTasks ?: BarTask[];
 }
 
 export type TaskTypeInternal = TaskType | "smalltask";

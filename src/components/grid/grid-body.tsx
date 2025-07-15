@@ -2,6 +2,7 @@ import React, { ReactChild } from "react";
 import { Task } from "../../types/public-types";
 import { addToDate } from "../../helpers/date-helper";
 import styles from "./grid.module.css";
+import { overlappingCount } from "../../helpers/bar-helper";
 
 export type GridBodyProps = {
   tasks: Task[];
@@ -24,6 +25,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   gridHeight
 }) => {
   let y = 0;
+
   const gridRows: ReactChild[] = [];
   const rowLines: ReactChild[] = [
     <line
@@ -36,13 +38,20 @@ export const GridBody: React.FC<GridBodyProps> = ({
     />,
   ];
   for (const task of tasks) {
+    let totalHeight = 0;
+    if (task.siblingTasks && task.siblingTasks.length>0){
+      totalHeight = rowHeight +(rowHeight * overlappingCount(task));
+    }
     gridRows.push(
       <rect
         key={"Row" + task.id}
         x="0"
         y={y}
         width={svgWidth}
-        height={rowHeight}
+        height={( task.siblingTasks && task.siblingTasks.length> 0) ?
+          rowHeight + (rowHeight * overlappingCount(task))
+          :
+          rowHeight}
         className={styles.gridRow}
       />
     );
@@ -50,13 +59,16 @@ export const GridBody: React.FC<GridBodyProps> = ({
       <line
         key={"RowLine" + task.id}
         x="0"
-        y1={y + rowHeight}
+        y1={(task.siblingTasks && task.siblingTasks.length > 0) ? y + rowHeight + (rowHeight * overlappingCount(task)) : y + rowHeight}
         x2={svgWidth}
-        y2={y + rowHeight}
+        y2={(task.siblingTasks && task.siblingTasks.length > 0) ? y + rowHeight + (rowHeight * overlappingCount(task)) : y + rowHeight}
         className={styles.gridRowLine}
       />
     );
-    y += rowHeight;
+    if (totalHeight > 0){
+      y += totalHeight;
+    }else
+      y += rowHeight;
   }
 
   // 필요한 만큼 빈 row 추가

@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { ColumnDef, Task, TableCellValue } from "../../types/public-types";
+import { overlappingCount } from "../../helpers/bar-helper";
 
 const localeDateStringCache: Record<string, string> = {};
 const toLocaleDateStringFactory = (locale: string) => (
@@ -43,6 +44,36 @@ export const TaskListTableDefault: React.FC<{
         onExpanderClick,
         colDefs,
       }) => {
+
+  const calculateRowSpans = (tasks: Task[], field: string): Record<string, number> => {
+    const spanMap: Record<string, number> = {};
+    let prevValue: any = null;
+    let span = 0;
+
+    for (const task of tasks) {
+      const currValue = task.tableData?.[field];
+
+      if (currValue === prevValue) {
+        span++;
+      } else {
+        if (prevValue != null && span > 0) {
+          spanMap[prevValue] = span;
+        }
+        prevValue = currValue;
+        span = 1;
+      }
+    }
+
+    if (prevValue != null && span > 0) {
+      spanMap[prevValue] = span;
+    }
+
+    return spanMap;
+  };
+
+  const rowSpanField = "phase"; // 예시 필드
+  const rowSpanMap = useMemo(() => calculateRowSpans(tasks, rowSpanField), [tasks]);
+
   const toLocaleDateString = useMemo(() => toLocaleDateStringFactory(locale), [locale]);
 
   const defaultColDefs: ColumnDef[] = [
@@ -64,6 +95,7 @@ export const TaskListTableDefault: React.FC<{
     }
     return value;
   };
+  let renderedRowSpanMap: Record<string, boolean> = {};
 
   return (
     <table
@@ -83,6 +115,7 @@ export const TaskListTableDefault: React.FC<{
           <tr
             key={task.id}
             style={{
+              minHeight : rowHeight,
               height: rowHeight,
               backgroundColor: isSelected
                 ? task.styles?.selectedRowColor ?? undefined
@@ -93,8 +126,10 @@ export const TaskListTableDefault: React.FC<{
           >
             {flatCols.map((col, colIndex) => {
               const field = col.field ?? "";
+              const value = task.tableData?.[field];
               let content: React.ReactNode;
 
+              // name 필드에 대한 확장 처리
               if (field === "name") {
                 content = (
                   <div style={{ display: "flex", alignItems: "center" }}>
@@ -116,19 +151,54 @@ export const TaskListTableDefault: React.FC<{
                   </div>
                 );
               } else {
-                const value = task.tableData?.[field];
                 content = formatCellValue(value);
               }
 
+              // rowSpan 적용 필드일 경우
+              if (field === rowSpanField) {
+                const rowSpanKey = String(value);
+                if (renderedRowSpanMap[rowSpanKey]) {
+                  return null; // 이미 렌더링된 경우 생략
+                }
+                renderedRowSpanMap[rowSpanKey] = true;
+
+                return (
+                  <td
+                    key={`${task.id}_${colIndex}`}
+                    rowSpan={rowSpanMap[rowSpanKey]}
+                    className={col.cellClass ?? ""}
+                    style={{
+                      minWidth: col.minWidth || rowWidth,
+                      border: "1px solid #e6e4e4",
+                      padding : "0px",
+                      textAlign: "center", // 가운데 정렬
+                      verticalAlign: "middle",
+                      writingMode: "vertical-rl", // 세로 쓰기
+                      textOrientation: "upright", // 문자 방향 자연스럽게
+                      ...(col.cellStyle || {}),
+                    }}
+                  >
+                    {col.cellRenderer ? col.cellRenderer(task) : content}
+                  </td>
+                );
+              }
+
+              // 일반 필드
               return (
                 <td
                   key={`${task.id}_${colIndex}`}
                   className={col.cellClass ?? ""}
                   style={{
+                    boxSizing: "border-box",
+                    minHeight : rowHeight,
+                    height:
+                      task.siblingTasks && task.siblingTasks.length > 0
+                        ? (overlappingCount(task)) * rowHeight + rowHeight
+                        : '',
                     minWidth: col.minWidth || rowWidth,
                     border: "1px solid #e6e4e4",
-                    padding: "4px",
-                    textAlign: "left",
+                    padding: "0px",
+                    textAlign: "center",
                     verticalAlign: "middle",
                     ...(col.cellStyle || {}),
                   }}

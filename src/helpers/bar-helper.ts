@@ -2,6 +2,8 @@ import { Task } from "../types/public-types";
 import { BarTask, TaskTypeInternal } from "../types/bar-task";
 import { BarMoveAction } from "../types/gantt-task-actions";
 
+const GAP = 10;
+
 export const convertToBarTasks = (
   tasks: Task[],
   dates: Date[],
@@ -21,11 +23,14 @@ export const convertToBarTasks = (
   projectBackgroundSelectedColor: string,
   milestoneBackgroundColor: string,
   milestoneBackgroundSelectedColor: string
-) => {
-  let barTasks = tasks.map((t, i) => {
-    return convertToBarTask(
-      t,
-      i,
+): BarTask[] => {
+  const allBarTasks: BarTask[] = [];
+  let currentY = 0;
+
+  const barTasks = tasks.map((task) => {
+    const baseBarTask = convertToBarTaskWithY(
+      task,
+      currentY,
       dates,
       columnWidth,
       rowHeight,
@@ -44,21 +49,144 @@ export const convertToBarTasks = (
       milestoneBackgroundColor,
       milestoneBackgroundSelectedColor
     );
+
+    const siblingBarTasks = (task.siblingTasks ?? []).map((sibling) =>
+      convertToBarTaskWithY(
+        sibling,
+        currentY,
+        dates,
+        columnWidth,
+        rowHeight,
+        taskHeight,
+        barCornerRadius,
+        handleWidth,
+        rtl,
+        barProgressColor,
+        barProgressSelectedColor,
+        barBackgroundColor,
+        barBackgroundSelectedColor,
+        projectProgressColor,
+        projectProgressSelectedColor,
+        projectBackgroundColor,
+        projectBackgroundSelectedColor,
+        milestoneBackgroundColor,
+        milestoneBackgroundSelectedColor
+      )
+    );
+
+    assignSiblingYPositions(siblingBarTasks, baseBarTask, taskHeight);
+
+    const allInGroup = [baseBarTask, ...siblingBarTasks];
+    const lineCount = calculateLineCount(allInGroup);
+    const groupHeight = lineCount * rowHeight;
+
+    currentY += groupHeight;
+
+    baseBarTask.siblingBarTasks = siblingBarTasks;
+    allBarTasks.push(baseBarTask, ...siblingBarTasks);
+    return baseBarTask;
   });
 
-  // set dependencies
-  barTasks = barTasks.map(task => {
+  for (const task of allBarTasks) {
     const dependencies = task.dependencies || [];
-    for (let j = 0; j < dependencies.length; j++) {
-      const dependence = barTasks.findIndex(
-        value => value.id === dependencies[j]
-      );
-      if (dependence !== -1) barTasks[dependence].barChildren.push(task);
+    for (const depId of dependencies) {
+      const parentTask = allBarTasks.find((t) => t.id === depId);
+      if (parentTask) {
+        parentTask.barChildren.push(task);
+      }
     }
-    return task;
-  });
+  }
 
   return barTasks;
+};
+
+const assignSiblingYPositions = (
+  siblings: BarTask[],
+  baseTask: BarTask,
+  taskHeight: number
+) => {
+  const lines: BarTask[][] = [[baseTask]];
+
+  siblings.forEach((sibling) => {
+    let placed = false;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line.some((t) => isOverlapping(t, sibling))) {
+        sibling.y = baseTask.y + i * (taskHeight + GAP);
+        line.push(sibling);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      sibling.y = baseTask.y + lines.length * (taskHeight + GAP);
+      lines.push([sibling]);
+    }
+  });
+};
+
+const convertToBarTaskWithY = (
+  task: Task,
+  y: number,
+  dates: Date[],
+  columnWidth: number,
+  rowHeight: number,
+  taskHeight: number,
+  barCornerRadius: number,
+  handleWidth: number,
+  rtl: boolean,
+  barProgressColor: string,
+  barProgressSelectedColor: string,
+  barBackgroundColor: string,
+  barBackgroundSelectedColor: string,
+  projectProgressColor: string,
+  projectProgressSelectedColor: string,
+  projectBackgroundColor: string,
+  projectBackgroundSelectedColor: string,
+  milestoneBackgroundColor: string,
+  milestoneBackgroundSelectedColor: string
+): BarTask => {
+  const bar = convertToBarTask(
+    task,
+    0,
+    dates,
+    columnWidth,
+    rowHeight,
+    taskHeight,
+    barCornerRadius,
+    handleWidth,
+    rtl,
+    barProgressColor,
+    barProgressSelectedColor,
+    barBackgroundColor,
+    barBackgroundSelectedColor,
+    projectProgressColor,
+    projectProgressSelectedColor,
+    projectBackgroundColor,
+    projectBackgroundSelectedColor,
+    milestoneBackgroundColor,
+    milestoneBackgroundSelectedColor
+  );
+  bar.y = y + (rowHeight - taskHeight) / 2;;
+  return bar;
+};
+
+const calculateLineCount = (tasks: BarTask[]): number => {
+  const lines: BarTask[][] = [];
+  for (const task of tasks) {
+    let placed = false;
+    for (const line of lines) {
+      if (!line.some((t) => isOverlapping(t, task))) {
+        line.push(task);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      lines.push([task]);
+    }
+  }
+  return lines.length;
 };
 
 const convertToBarTask = (
@@ -600,4 +728,28 @@ const handleTaskBySVGMouseEventForMilestone = (
     }
   }
   return { isChanged, changedTask };
+};
+
+export const isOverlapping = (a: BarTask, b: BarTask) => {
+  return a.start <= b.end && b.start <= a.end;
+};
+
+export const overlappingCount = (task: Task): number => {
+  const baseStart = task.start.getTime();
+  const baseEnd = task.end.getTime();
+
+  const siblings = task.siblingTasks ?? [];
+
+  let count = 0;
+
+  for (const sibling of siblings) {
+    const sibStart = sibling.start.getTime();
+    const sibEnd = sibling.end.getTime();
+
+    const isOverlapping = sibStart < baseEnd && sibEnd > baseStart;
+
+    if (isOverlapping) count++;
+  }
+
+  return count;
 };

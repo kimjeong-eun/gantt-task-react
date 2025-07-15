@@ -8,6 +8,7 @@ type ArrowProps = {
   taskHeight: number;
   arrowIndent: number;
   rtl: boolean;
+  isHighlighted?: boolean;
 };
 export const Arrow: React.FC<ArrowProps> = ({
   taskFrom,
@@ -16,6 +17,7 @@ export const Arrow: React.FC<ArrowProps> = ({
   taskHeight,
   arrowIndent,
   rtl,
+  isHighlighted = false,
 }) => {
   let path: string;
   let trianglePoints: string;
@@ -39,8 +41,13 @@ export const Arrow: React.FC<ArrowProps> = ({
 
   return (
     <g className="arrow">
-      <path strokeWidth="1.5" d={path} fill="none" />
-      <polygon points={trianglePoints} />
+      <path stroke={isHighlighted ? "#ff6600" : "#999"}
+             strokeWidth={isHighlighted ? 2.5 : 1.5} d={path} fill="none" />
+      <polygon
+        points={trianglePoints}
+        fill={isHighlighted ? "#ff6600" : "#999"}
+        stroke="none"
+      />
     </g>
   );
 };
@@ -52,26 +59,39 @@ const drownPathAndTriangle = (
   taskHeight: number,
   arrowIndent: number
 ) => {
-  const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
-  const taskToEndPosition = taskTo.y + taskHeight / 2;
-  const taskFromEndPosition = taskFrom.x2 + arrowIndent * 2;
-  const taskFromHorizontalOffsetValue =
-    taskFromEndPosition < taskTo.x1 ? "" : `H ${taskTo.x1 - arrowIndent}`;
-  const taskToHorizontalOffsetValue =
-    taskFromEndPosition > taskTo.x1
-      ? arrowIndent
-      : taskTo.x1 - taskFrom.x2 - arrowIndent;
+  const fromX = taskFrom.x2;
+  const fromY = taskFrom.y + taskHeight / 2;
+  const toX = taskTo.x1;
+  const toY = taskTo.y + taskHeight / 2;
 
-  const path = `M ${taskFrom.x2} ${taskFrom.y + taskHeight / 2} 
-  h ${arrowIndent} 
-  v ${(indexCompare * rowHeight) / 2} 
+  const verticalOffset =
+    (fromY !== toY && Math.abs(fromY - toY) < rowHeight) ?
+      Math.abs(fromY - toY) / 2 :
+      fromY === toY ? 0 :
+      fromY > toY
+      ? -rowHeight / 2
+      : rowHeight / 2;
+
+  const taskFromEndPosition = fromX + arrowIndent * 2;
+
+  const taskFromHorizontalOffsetValue =
+    taskFromEndPosition < toX ? "" : `H ${toX - arrowIndent}`;
+
+  const taskToHorizontalOffsetValue =
+    taskFromEndPosition > toX
+      ? arrowIndent
+      : toX - taskFrom.x2 - arrowIndent;
+
+  const path = `M ${fromX} ${fromY}
+  h ${arrowIndent}
+  v ${verticalOffset}
   ${taskFromHorizontalOffsetValue}
-  V ${taskToEndPosition} 
+  V ${toY}
   h ${taskToHorizontalOffsetValue}`;
 
-  const trianglePoints = `${taskTo.x1},${taskToEndPosition} 
-  ${taskTo.x1 - 5},${taskToEndPosition - 5} 
-  ${taskTo.x1 - 5},${taskToEndPosition + 5}`;
+  const trianglePoints = `${taskTo.x1},${toY}
+  ${taskTo.x1 - 5},${toY - 5}
+  ${taskTo.x1 - 5},${toY + 5}`;
   return [path, trianglePoints];
 };
 
@@ -82,25 +102,37 @@ const drownPathAndTriangleRTL = (
   taskHeight: number,
   arrowIndent: number
 ) => {
-  const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
-  const taskToEndPosition = taskTo.y + taskHeight / 2;
-  const taskFromEndPosition = taskFrom.x1 - arrowIndent * 2;
+  const fromX = taskFrom.x1;
+  const fromY = taskFrom.y + taskHeight / 2;
+  const toX = taskTo.x2;
+  const toY = taskTo.y + taskHeight / 2;
+
+  const verticalOffset = Math.abs(fromY - toY) < rowHeight
+    ? 0
+    : fromY > toY
+      ? -rowHeight / 2
+      : rowHeight / 2;
+
+  const taskFromEndPosition = fromX - arrowIndent * 2;
+
   const taskFromHorizontalOffsetValue =
-    taskFromEndPosition > taskTo.x2 ? "" : `H ${taskTo.x2 + arrowIndent}`;
+    taskFromEndPosition > toX ? "" : `H ${toX + arrowIndent}`;
+
   const taskToHorizontalOffsetValue =
-    taskFromEndPosition < taskTo.x2
+    taskFromEndPosition < toX
       ? -arrowIndent
-      : taskTo.x2 - taskFrom.x1 + arrowIndent;
+      : toX - taskFrom.x1 + arrowIndent;
 
-  const path = `M ${taskFrom.x1} ${taskFrom.y + taskHeight / 2} 
-  h ${-arrowIndent} 
-  v ${(indexCompare * rowHeight) / 2} 
-  ${taskFromHorizontalOffsetValue}
-  V ${taskToEndPosition} 
-  h ${taskToHorizontalOffsetValue}`;
+  const path = `M ${fromX} ${fromY}
+    h ${-arrowIndent}
+    v ${verticalOffset}
+    ${taskFromHorizontalOffsetValue}
+    V ${toY}
+    h ${taskToHorizontalOffsetValue}`;
 
-  const trianglePoints = `${taskTo.x2},${taskToEndPosition} 
-  ${taskTo.x2 + 5},${taskToEndPosition + 5} 
-  ${taskTo.x2 + 5},${taskToEndPosition - 5}`;
-  return [path, trianglePoints];
+  const trianglePoints = `${toX},${toY}
+    ${toX + 5},${toY + 5}
+    ${toX + 5},${toY - 5}`;
+
+  return [path.trim(), trianglePoints.trim()];
 };

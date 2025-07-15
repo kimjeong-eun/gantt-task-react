@@ -1,3 +1,4 @@
+
 export enum ViewMode {
   Hour = "Hour",
   QuarterDay = "Quarter Day",
@@ -37,6 +38,8 @@ export interface Task {
   baselineEnd?: Date;
   baselineColor?: string;
   tableData ?: Record<string, TableCellValue>;
+
+  siblingTasks?: Task[];
 }
 
 //
