@@ -15,6 +15,11 @@
   baselineColor?: string;
   ```
 
+## Install
+
+```
+npm install gantt-task-react-plus
+```
 
 ### License
 
