@@ -14,9 +14,9 @@ const App = () => {
   if (view === ViewMode.Year) {
     columnWidth = 350;
   } else if (view === ViewMode.Month) {
-    columnWidth = 300;
+    columnWidth = 110;
   } else if (view === ViewMode.Week) {
-    columnWidth = 250;
+    columnWidth = 200;
   }
 
   const handleTaskChange = (task: Task) => {
@@ -109,7 +109,7 @@ const App = () => {
       <h3>Gantt Custom TimeLine</h3>
       <Gantt
         tasks={tasks}
-        viewMode={ViewMode.Month}
+        viewMode={view}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}
         onProgressChange={handleProgressChange}
@@ -123,6 +123,9 @@ const App = () => {
         colDefs={colDef}
         todayColor={'none'}
         TooltipContent={tooltipContents}
+        projectBaseDate={new Date(2025, 0, 1)}
+        headerHeight={70}
+        highlightArrow = {true}
       />
     </div>
   );

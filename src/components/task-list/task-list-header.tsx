@@ -51,12 +51,13 @@ export const TaskListHeaderDefault: React.FC<{
         fontFamily,
         fontSize,
         borderCollapse: "collapse",
-        width: "100%",
       }}
     >
       <thead>
       {headerRows.map((cols, level) => (
-        <tr key={`header-row-${level}`} style={{ height: headerHeight / totalDepth }}>
+        <tr key={`header-row-${level}`} style={{ height: (headerHeight / totalDepth)-0.5, boxSizing : "border-box", borderCollapse: "collapse"}}>
+
+
           {cols.map((col, index) => {
             const hasChildren = !!col.children?.length;
             const colSpan = hasChildren ? getLeafCount(col) : 1;
@@ -73,6 +74,8 @@ export const TaskListHeaderDefault: React.FC<{
                   borderBottom: "none",
                   textAlign: "center",
                   padding : "0px",
+                  margin : "0px",
+                  boxSizing: "border-box",
                   ...(col.headerStyle || {}),
                 }}
               >

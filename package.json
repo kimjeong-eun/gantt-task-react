@@ -1,7 +1,7 @@
 {
-  "name": "gantt-timeline-react",
+  "name": "gantt-task-timeline-react",
   "version": "0.0.1",
-  "description": "A customized version of gantt-task-react with baseline support & timeline",
+  "description": "A customized version of gantt-task-react with baseline support & Multiple Tasks in a Single Row",
   "author": "Jeongeun Kim <jeongeun587@gmail.com>",
   "homepage": "https://github.com/kimjeong-eun/gantt-task-react",
   "license": "MIT",

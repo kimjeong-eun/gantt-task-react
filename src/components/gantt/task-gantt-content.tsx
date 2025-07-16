@@ -30,6 +30,8 @@ export type TaskGanttContentProps = {
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
+  highlightArrow ?: boolean;
+  highlightArrowColor ?: string;
 } & EventOption;
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
@@ -55,6 +57,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                                                                     onDoubleClick,
                                                                     onClick,
                                                                     onDelete,
+                                                                    highlightArrow,
+                                                                    highlightArrowColor
                                                                   }) => {
   const point = svg?.current?.createSVGPoint();
   const [xStep, setXStep] = useState(0);
@@ -198,9 +202,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                   taskHeight={taskHeight}
                   arrowIndent={arrowIndent}
                   rtl={rtl}
+                  highlightArrow = {highlightArrow}
                   isHighlighted={
                     selectedTask?.id === from.id || selectedTask?.id === to.id
                   }
+                  highlightArrowColor={highlightArrowColor}
                 />
               ) : null;
             })

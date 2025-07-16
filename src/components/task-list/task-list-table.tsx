@@ -103,7 +103,7 @@ export const TaskListTableDefault: React.FC<{
         fontFamily,
         fontSize,
         borderCollapse: "collapse",
-        width: "100%",
+        boxSizing: "border-box",
       }}
     >
       <tbody>
@@ -168,6 +168,7 @@ export const TaskListTableDefault: React.FC<{
                     rowSpan={rowSpanMap[rowSpanKey]}
                     className={col.cellClass ?? ""}
                     style={{
+                      boxSizing: "border-box",
                       minWidth: col.minWidth || rowWidth,
                       border: "1px solid #e6e4e4",
                       padding : "0px",

@@ -47,6 +47,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   projectBackgroundSelectedColor = "#f7bb53",
   milestoneBackgroundColor = "#f1c453",
   milestoneBackgroundSelectedColor = "#f29e4c",
+  highlightArrowColor = "#ff6600",
   rtl = false,
   handleWidth = 8,
   timeStep = 300000,
@@ -70,7 +71,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   gridHeight = 0,
   externalScrollY = 0,
   onScrollYChange,
-  selectedTaskId =''
+  selectedTaskId ='',
+  projectBaseDate,
+  highlightArrow = false
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -458,7 +461,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     dates: dateSetup.dates,
     todayColor,
     rtl,
-    gridHeight
+    gridHeight,
   };
   const calendarProps: CalendarProps = {
     dateSetup,
@@ -470,6 +473,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     fontSize,
     rtl,
     headerColor,
+    projectBaseDate,
   };
   const barProps: TaskGanttContentProps = {
     tasks: barTasks,
@@ -494,6 +498,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     onDoubleClick,
     onClick,
     onDelete,
+    highlightArrow,
+    highlightArrowColor
   };
 
   const tableProps: TaskListProps = {

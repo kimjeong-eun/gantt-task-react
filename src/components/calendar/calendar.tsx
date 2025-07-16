@@ -21,6 +21,7 @@ export type CalendarProps = {
   fontFamily: string;
   fontSize: string;
   headerColor : string;
+  projectBaseDate ?: Date;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -33,6 +34,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   fontFamily,
   fontSize,
   headerColor,
+  projectBaseDate,
 }) => {
   const getCalendarValuesForYear = () => {
     const topValues: ReactChild[] = [];
@@ -127,9 +129,24 @@ export const Calendar: React.FC<CalendarProps> = ({
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
     const topDefaultHeight = headerHeight * 0.5;
+
     for (let i = 0; i < dateSetup.dates.length; i++) {
       const date = dateSetup.dates[i];
       const bottomValue = getLocaleMonth(date, locale);
+
+      let projectMonthLabel = "";
+      if (projectBaseDate) {
+        const diffMonth =
+          (date.getFullYear() - projectBaseDate.getFullYear()) * 12 +
+          (date.getMonth() - projectBaseDate.getMonth());
+
+        if (diffMonth >= 0) {
+          projectMonthLabel = diffMonth === 0 ? "( M )" : `( M + ${diffMonth} )`;
+        } else {
+          projectMonthLabel = `( M ${diffMonth} )`; // e.g., M - 1
+        }
+      }
+
       bottomValues.push(
         <text
           key={bottomValue + date.getFullYear()}
@@ -137,9 +154,10 @@ export const Calendar: React.FC<CalendarProps> = ({
           x={columnWidth * i + columnWidth * 0.5}
           className={styles.calendarBottomText}
         >
-          {bottomValue}
+          {bottomValue} {projectMonthLabel}
         </text>
       );
+
       if (
         i === 0 ||
         date.getFullYear() !== dateSetup.dates[i - 1].getFullYear()
@@ -164,6 +182,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         );
       }
     }
+
     return [topValues, bottomValues];
   };
 

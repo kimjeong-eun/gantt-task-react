@@ -8,7 +8,9 @@ type ArrowProps = {
   taskHeight: number;
   arrowIndent: number;
   rtl: boolean;
+  highlightArrow ?: boolean;
   isHighlighted?: boolean;
+  highlightArrowColor ?: string;
 };
 export const Arrow: React.FC<ArrowProps> = ({
   taskFrom,
@@ -17,7 +19,7 @@ export const Arrow: React.FC<ArrowProps> = ({
   taskHeight,
   arrowIndent,
   rtl,
-  isHighlighted = false,
+  isHighlighted = false, highlightArrow ,highlightArrowColor
 }) => {
   let path: string;
   let trianglePoints: string;
@@ -41,11 +43,11 @@ export const Arrow: React.FC<ArrowProps> = ({
 
   return (
     <g className="arrow">
-      <path stroke={isHighlighted ? "#ff6600" : "#999"}
-             strokeWidth={isHighlighted ? 2.5 : 1.5} d={path} fill="none" />
+      <path stroke={highlightArrow && isHighlighted ? highlightArrowColor : "#999"}
+             strokeWidth={highlightArrow && isHighlighted ? 2.5 : 1.5} d={path} fill="none" />
       <polygon
         points={trianglePoints}
-        fill={isHighlighted ? "#ff6600" : "#999"}
+        fill={highlightArrow && isHighlighted ? highlightArrowColor : "#999"}
         stroke="none"
       />
     </g>
@@ -64,13 +66,18 @@ const drownPathAndTriangle = (
   const toX = taskTo.x1;
   const toY = taskTo.y + taskHeight / 2;
 
-  const verticalOffset =
-    (fromY !== toY && Math.abs(fromY - toY) < rowHeight) ?
-      Math.abs(fromY - toY) / 2 :
-      fromY === toY ? 0 :
-      fromY > toY
-      ? -rowHeight / 2
-      : rowHeight / 2;
+  let verticalOffset = 0;
+
+  if (fromY !== toY && Math.abs(fromY - toY) < rowHeight){
+    if (fromY > toY) { verticalOffset = -Math.abs(fromY - toY)  / 2}
+    else { verticalOffset = Math.abs(fromY - toY)  / 2}
+  } else if (fromY === toY) {
+    verticalOffset = 0
+  } else if (fromY > toY) {
+    verticalOffset = -rowHeight / 2
+  } else {
+    verticalOffset = rowHeight / 2
+  }
 
   const taskFromEndPosition = fromX + arrowIndent * 2;
 

@@ -218,7 +218,7 @@ export function initTasks() {
         {
           id: '13',
           name: 'Load trucks',
-          start: new Date('2025-07-15'),
+          start: new Date('2025-06-15'),
           end: new Date('2025-08-20'),
           type: 'task',
           progress: 50,
@@ -233,7 +233,7 @@ export function initTasks() {
         {
           id: '14',
           name: 'Ship Order',
-          start: new Date('2025-09-02'),
+          start: new Date('2025-06-02'),
           end: new Date('2025-09-20'),
           type: 'task',
           progress: 50,
