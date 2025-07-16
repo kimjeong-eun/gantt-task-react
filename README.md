@@ -1,20 +1,27 @@
-# gantt-task-react-plus
+# gantt-task-timeline-react
 
 📌 This is a customized fork of [gantt-task-react](https://github.com/MaTeMaTuK/gantt-task-react).
 
 ### Customizations
 
-- ✅ Baseline line rendering
-- 🎨 Baseline color customization
-- 📆 Extended date range calculation
-- 🛠 Additional Calendar refinements
-- 📌 New Task properties:
+1. Support for Multiple Tasks in a Single Row
+   •	Renders multiple bars in the same row using siblingTasks
+   •	If task dates do not overlap, they are placed on the same line; overlapping tasks are stacked vertically
+   •	Custom Y-position calculation implemented in bar-helper.ts
+
+📌New Task properties
   ```
-  baselineStart?: Date;
-  baselineEnd?: Date;
-  baselineColor?: string;
+   siblingTasks?: Task[]; // Used to render multiple bars within the same row
   ```
 
+2. Custom Dependency (Arrow) Rendering
+   •	Draws arrows between tasks based on dependencies
+   •	Supports arrow connections between siblingTasks within the same row
+
+3. Automatic Line Wrapping Inside Bars
+   •	If a bar is too narrow, the task name is automatically wrapped using <tspan>
+   •	If there are multiple lines, the bar height expands dynamically (up to rowHeight)
+   •	Text remains vertically centered within the bar
 
 ### License
 
@@ -32,7 +39,7 @@ Original copyright © 2020 MaTeMaTuK
 ## Install
 
 ```
-npm install gantt-task-react
+npm install gantt-task-timeline-react
 ```
 
 ## How to use it

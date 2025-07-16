@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "description": "A customized version of gantt-task-react with baseline support & Multiple Tasks in a Single Row",
   "author": "Jeongeun Kim <jeongeun587@gmail.com>",
-  "homepage": "https://github.com/kimjeong-eun/gantt-task-react",
+  "homepage": "https://github.com/kimjeong-eun/gantt-task-react/tree/feature/custom-timeline",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kimjeong-eun/gantt-task-react.git"
+    "url": "https://github.com/kimjeong-eun/gantt-task-react/tree/feature/custom-timeline"
   },
   "contributors": [
     {
