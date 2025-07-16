@@ -32,7 +32,7 @@ export const TopPartOfCalendar: React.FC<TopPartOfCalendarProps> = ({
         key={value + "text"}
         y={yText}
         x={xText}
-        className={styles.calendarTopText}
+        className={styles.calendarTopTextTimeline}
         textAnchor="middle"
       >
         {value}

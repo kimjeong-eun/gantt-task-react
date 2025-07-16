@@ -1,4 +1,4 @@
-.calendarBottomText {
+.calendarBottomTextTimeline {
   text-anchor: middle;
   fill: #C0C0C0;
   -webkit-touch-callout: none;
@@ -13,7 +13,7 @@
   stroke: #e6e4e4;
 }
 
-.calendarTopText {
+.calendarTopTextTimeline {
   text-anchor: middle;
   fill: #C0C0C0;
   font-weight: bold;

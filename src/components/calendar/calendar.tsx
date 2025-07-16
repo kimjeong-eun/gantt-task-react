@@ -48,7 +48,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * i + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {bottomValue}
         </text>
@@ -93,7 +93,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * i + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {quarter}
         </text>
@@ -152,7 +152,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={bottomValue + date.getFullYear()}
           y={headerHeight * 0.8}
           x={columnWidth * i + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {bottomValue} {projectMonthLabel}
         </text>
@@ -277,7 +277,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * (i + +rtl) + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {bottomValue}
         </text>
@@ -303,7 +303,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * i + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {bottomValue}
         </text>
@@ -352,7 +352,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * (i + +rtl)}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
           fontFamily={fontFamily}
         >
           {bottomValue}
@@ -397,7 +397,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * (i + +rtl)}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
           fontFamily={fontFamily}
         >
           {bottomValue}
