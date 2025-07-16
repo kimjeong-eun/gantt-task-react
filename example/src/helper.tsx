@@ -9,7 +9,7 @@ export function initTasks() {
       id:'1-1',
       name :'Project1',
       type: "project",
-      start: new Date('2025-06-01'),
+      start: new Date('2024-12-02'),
       end: new Date('2025-06-10'),
       progress: 1,
       hideChildren :false,

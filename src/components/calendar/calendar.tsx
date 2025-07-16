@@ -194,6 +194,7 @@ export const Calendar: React.FC<CalendarProps> = ({
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
       const week = getWeekOfMonthKSIso8601(date).week;
+      const year = getWeekOfMonthKSIso8601(date).year;
       if (week === 0) continue;
 
       //
@@ -232,6 +233,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         if (!weekRendered.has(labelKey)) {
           const labelDate = new Date(date);
           labelDate.setMonth(maxMonth);
+          labelDate.setFullYear(year);
           const topValue = `${getLocaleMonth(labelDate, locale)}, ${labelDate.getFullYear()}`;
 
           const _xText = getMaxWeekOfMonth(labelDate.getFullYear(), labelDate.getMonth());
@@ -258,13 +260,12 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * (i + +rtl) + columnWidth * 0.5}
-          className={styles.calendarBottomText}
+          className={styles.calendarBottomTextTimeline}
         >
           {bottomValue}
         </text>
       );
     }
-
     return [topValues, bottomValues];
   };
 

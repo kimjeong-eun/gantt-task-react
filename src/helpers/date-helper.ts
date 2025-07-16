@@ -255,12 +255,12 @@ export const getWeekNumberISO8601 = (date: Date) => {
   }
 };
 
-export function getWeekOfMonthKSIso8601(date: Date): { month: number; week: number } {
-  // 주를 계산하는 로직입니다.
-  // 한국의 주간 수 결정법 표준에 따라, 한주의 시작은 '월요일'이며,
-  // 매월 첫째주, 마지막 주의 구분하는 기준은 그 주간의 과반수를 차지하고 있는가에 따라 계산됩니다.
-
-  // 주차의 날짜 리스트 생성..
+export function getWeekOfMonthKSIso8601(date: Date): {
+  year: number;
+  month: number;
+  week: number;
+} {
+  // 주간의 날짜 리스트 생성 (월~일)
   const weekDates: Date[] = [];
   const startOfWeek = new Date(date);
   startOfWeek.setDate(date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() - 1)); // 월요일로 보정
@@ -271,14 +271,14 @@ export function getWeekOfMonthKSIso8601(date: Date): { month: number; week: numb
     weekDates.push(d);
   }
 
-  // 각 월별 날짜 수 계산
+  // 월별 포함 개수 카운팅
   const monthCount = new Map<number, number>();
   for (const d of weekDates) {
     const m = d.getMonth();
     monthCount.set(m, (monthCount.get(m) || 0) + 1);
   }
 
-  // 가장 많이 포함된 월 선택
+  // 과반수 차지한 월 구하기
   let maxMonth = date.getMonth();
   let maxCount = 0;
   // @ts-ignore
@@ -289,18 +289,22 @@ export function getWeekOfMonthKSIso8601(date: Date): { month: number; week: numb
     }
   }
 
-  // 기준 월의 첫 주차를 찾아서 현재 주차 구함
-  const firstOfMonth = new Date(date.getFullYear(), maxMonth, 1);
-  const firstDay = firstOfMonth.getDay() === 0 ? 7 : firstOfMonth.getDay(); // 일요일 보정
+  // 해당 maxMonth에 속한 연도 구하기
+  const maxMonthYear = weekDates.find(d => d.getMonth() === maxMonth)!.getFullYear();
+
+  // 기준 월의 첫 번째 월요일 찾기
+  const firstOfMonth = new Date(maxMonthYear, maxMonth, 1);
+  const firstDay = firstOfMonth.getDay() === 0 ? 7 : firstOfMonth.getDay();
   const firstMonday = new Date(firstOfMonth);
   firstMonday.setDate(firstOfMonth.getDate() + (firstDay <= 4 ? -firstDay + 1 : 8 - firstDay));
 
   const diffDays = Math.floor((startOfWeek.getTime() - firstMonday.getTime()) / (1000 * 60 * 60 * 24));
-  return {
-    month : maxMonth,
-    week : Math.floor(diffDays / 7) + 1
-  }
 
+  return {
+    year: maxMonthYear,
+    month: maxMonth,
+    week: Math.floor(diffDays / 7) + 1,
+  };
 }
 
 export const getDaysInMonth = (month: number, year: number) => {
