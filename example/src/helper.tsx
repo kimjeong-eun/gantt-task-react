@@ -28,7 +28,7 @@ export function initTasks() {
     {
       id: '2',
       name: 'Place Holder',
-      start: new Date('2025-01-01'),
+      start: new Date('2024-12-30'),
       end: new Date('2025-01-30'),
       type: 'task',
       progress: 50,

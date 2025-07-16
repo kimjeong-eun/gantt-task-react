@@ -40,7 +40,7 @@ export const TaskListTableDefault: React.FC<{
         locale,
         tasks,
         selectedTaskId,
-        setSelectedTask,
+        /*setSelectedTask,*/
         onExpanderClick,
         colDefs,
       }) => {
@@ -122,7 +122,7 @@ export const TaskListTableDefault: React.FC<{
                 : task.styles?.defaultRowColor ?? undefined,
               cursor: "pointer",
             }}
-            onClick={() => setSelectedTask(task.id)}
+            /*onClick={() => setSelectedTask(task.id)}*/
           >
             {flatCols.map((col, colIndex) => {
               const field = col.field ?? "";
