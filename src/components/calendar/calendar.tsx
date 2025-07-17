@@ -184,27 +184,23 @@ export const Calendar: React.FC<CalendarProps> = ({
   }
 
   const getCalendarValuesForWeek = () => {
-    //
-    const topValues: ReactChild[] = [];
-    const bottomValues: ReactChild[] = [];
+    const topValues: React.ReactChild[] = [];
+    const bottomValues: React.ReactChild[] = [];
     const topDefaultHeight = headerHeight * 0.5;
     const dates = dateSetup.dates;
-    const weekRendered = new Set<string>(); // 이미 렌더링한 라벨 추적
+    const weekRendered = new Set<string>();
 
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
-      const week = getWeekOfMonthKSIso8601(date).week;
-      const year = getWeekOfMonthKSIso8601(date).year;
+      const { week, year } = getWeekOfMonthKSIso8601(date);
       if (week === 0) continue;
 
-      //
+      // top
       if (week === 1) {
-
         // 주 시작일 계산 (월요일 기준)
         const monday = new Date(date);
         monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
 
-        //
         const weekDates: Date[] = [];
         for (let j = 0; j < 7; j++) {
           const d = new Date(monday);
@@ -212,14 +208,12 @@ export const Calendar: React.FC<CalendarProps> = ({
           weekDates.push(d);
         }
 
-        //
         const monthCount = new Map<number, number>();
         for (const d of weekDates) {
           const m = d.getMonth();
           monthCount.set(m, (monthCount.get(m) || 0) + 1);
         }
 
-        //
         let maxMonth = -1;
         let maxCount = 0;
         for (const [m, c] of Array.from(monthCount.entries())) {
@@ -229,11 +223,10 @@ export const Calendar: React.FC<CalendarProps> = ({
           }
         }
 
-        const labelKey = `${date.getFullYear()}-${maxMonth}`;
+        //
+        const labelKey = `${year}-${maxMonth}`;
         if (!weekRendered.has(labelKey)) {
-          const labelDate = new Date(date);
-          labelDate.setMonth(maxMonth);
-          labelDate.setFullYear(year);
+          const labelDate = new Date(year, maxMonth, 1);
           const topValue = `${getLocaleMonth(labelDate, locale)}, ${labelDate.getFullYear()}`;
 
           const _xText = getMaxWeekOfMonth(labelDate.getFullYear(), labelDate.getMonth());
@@ -245,7 +238,7 @@ export const Calendar: React.FC<CalendarProps> = ({
               x1Line={columnWidth * i}
               y1Line={0}
               y2Line={topDefaultHeight}
-              xText={columnWidth * i + columnWidth *_xText * 0.5}
+              xText={columnWidth * i + columnWidth * _xText * 0.5}
               yText={topDefaultHeight * 0.6}
             />
           );
