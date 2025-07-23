@@ -253,7 +253,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           key={date.getTime()}
           y={headerHeight * 0.8}
           x={columnWidth * (i + +rtl) + columnWidth * 0.5}
-          className={styles.calendarBottomTextTimeline}
+          className={styles.calendarBottomText}
         >
           {bottomValue}
         </text>
