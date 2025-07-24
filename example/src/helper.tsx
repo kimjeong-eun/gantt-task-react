@@ -14,10 +14,6 @@ export function initTasks() {
       type: 'task',
       progress: 70,
       styles: {
-        backgroundColor :'none',
-        progressColor: 'none',
-        progressSelectedColor : 'none',
-        backgroundSelectedColor :'none',
       },
       tableData : {
         phase : 'Engineering',
@@ -140,17 +136,13 @@ export function initTasks() {
       isDisabled : true,
     },
     {
-      id: '9',
-      name: 'Empty-3',
+      id: 'empty-3',
+      name: '',
       start: new Date('2025-11-01'),
       end: new Date('2025-12-09'),
       type: 'task',
       progress: 70,
       styles: {
-        backgroundColor :'none',
-        progressColor: 'none',
-        progressSelectedColor : 'none',
-        backgroundSelectedColor :'none'
       },
       tableData : {
         phase : 'Procurement',

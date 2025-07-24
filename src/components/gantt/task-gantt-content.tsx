@@ -30,8 +30,8 @@ export type TaskGanttContentProps = {
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
-  highlightArrow ?: boolean;
-  highlightArrowColor ?: string;
+  highlightArrow?: boolean;
+  highlightArrowColor?: string;
 } & EventOption;
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
@@ -46,8 +46,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                                                                     taskHeight,
                                                                     arrowColor,
                                                                     arrowIndent,
-                                                                    fontFamily,
                                                                     fontSize,
+                                                                    fontFamily,
                                                                     rtl,
                                                                     setGanttEvent,
                                                                     setFailedTask,
@@ -58,7 +58,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                                                                     onClick,
                                                                     onDelete,
                                                                     highlightArrow,
-                                                                    highlightArrowColor
+                                                                    highlightArrowColor,
                                                                   }) => {
   const point = svg?.current?.createSVGPoint();
   const [xStep, setXStep] = useState(0);
@@ -186,13 +186,18 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
+  // 'empty-'가 포함된 task는 렌더링 제외
+  const renderableTasks = tasks.filter(task => !task.id.includes("empty-"));
+
   return (
     <g className="content">
       <g className="arrows" fill={arrowColor} stroke={arrowColor}>
-        {tasks.flatMap(task =>
+        {renderableTasks.flatMap(task =>
           [task, ...(task.siblingBarTasks ?? [])].flatMap(from =>
             from.barChildren.map(child => {
-              const to = tasks.find(t => t.id === child.id) ?? tasks.flatMap(t => t.siblingBarTasks ?? []).find(t => t.id === child.id);
+              const to =
+                renderableTasks.find(t => t.id === child.id) ??
+                renderableTasks.flatMap(t => t.siblingBarTasks ?? []).find(t => t.id === child.id);
               return to ? (
                 <Arrow
                   key={`Arrow from ${from.id} to ${to.id}`}
@@ -202,10 +207,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                   taskHeight={taskHeight}
                   arrowIndent={arrowIndent}
                   rtl={rtl}
-                  highlightArrow = {highlightArrow}
-                  isHighlighted={
-                    selectedTask?.id === from.id || selectedTask?.id === to.id
-                  }
+                  highlightArrow={highlightArrow}
+                  isHighlighted={selectedTask?.id === from.id || selectedTask?.id === to.id}
                   highlightArrowColor={highlightArrowColor}
                 />
               ) : null;
@@ -214,7 +217,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         )}
       </g>
       <g className="bar" fontFamily={fontFamily} fontSize={fontSize}>
-        {tasks.flatMap(task =>
+        {renderableTasks.flatMap(task =>
           [task, ...(task.siblingBarTasks ?? [])].map(bar => (
             <TaskItem
               key={bar.id}
