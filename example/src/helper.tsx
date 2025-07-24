@@ -1,10 +1,10 @@
 import { Task } from "../../dist/types/public-types";
 
 export function initTasks() {
-/*
-  const currentDate = new Date();
-  FFA834
-*/
+  /*
+    const currentDate = new Date();
+    FFA834
+  */
   const tasks: Task[] = [
     {
       id: 'empty-1',
@@ -14,6 +14,10 @@ export function initTasks() {
       type: 'task',
       progress: 70,
       styles: {
+        backgroundColor :'none',
+        progressColor: 'none',
+        progressSelectedColor : 'none',
+        backgroundSelectedColor :'none',
       },
       tableData : {
         phase : 'Engineering',
@@ -136,13 +140,17 @@ export function initTasks() {
       isDisabled : true,
     },
     {
-      id: 'empty-3',
-      name: '',
+      id: '9',
+      name: 'Empty-3',
       start: new Date('2025-11-01'),
       end: new Date('2025-12-09'),
       type: 'task',
       progress: 70,
       styles: {
+        backgroundColor :'none',
+        progressColor: 'none',
+        progressSelectedColor : 'none',
+        backgroundSelectedColor :'none'
       },
       tableData : {
         phase : 'Procurement',
