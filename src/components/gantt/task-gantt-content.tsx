@@ -189,26 +189,64 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   return (
     <g className="content">
       <g className="arrows" fill={arrowColor} stroke={arrowColor}>
+        {/* 일반 화살표 먼저 렌더링 */}
         {tasks.flatMap(task =>
           [task, ...(task.siblingBarTasks ?? [])].flatMap(from =>
             from.barChildren.map(child => {
-              const to = tasks.find(t => t.id === child.id) ?? tasks.flatMap(t => t.siblingBarTasks ?? []).find(t => t.id === child.id);
-              return to ? (
+              const to =
+                tasks.find(t => t.id === child.id) ??
+                tasks.flatMap(t => t.siblingBarTasks ?? []).find(t => t.id === child.id);
+
+              const isHighlighted =
+                selectedTask?.id === from.id || selectedTask?.id === to?.id;
+
+              if (!to || isHighlighted) return null;
+
+              return (
                 <Arrow
-                  key={`Arrow from ${from.id} to ${to.id}`}
+                  key={`arrow-${from.id}-${to.id}`}
                   taskFrom={from}
                   taskTo={to}
                   rowHeight={rowHeight}
                   taskHeight={taskHeight}
                   arrowIndent={arrowIndent}
                   rtl={rtl}
-                  highlightArrow = {highlightArrow}
-                  isHighlighted={
-                    selectedTask?.id === from.id || selectedTask?.id === to.id
-                  }
+                  highlightArrow={highlightArrow}
+                  isHighlighted={false}
                   highlightArrowColor={highlightArrowColor}
                 />
-              ) : null;
+              );
+            })
+          )
+        )}
+
+        {/* 하이라이트된 arrow는 위에 보이도록 */}
+        {tasks.flatMap(task =>
+          [task, ...(task.siblingBarTasks ?? [])].flatMap(from =>
+            from.barChildren.map(child => {
+              const to =
+                tasks.find(t => t.id === child.id) ??
+                tasks.flatMap(t => t.siblingBarTasks ?? []).find(t => t.id === child.id);
+
+              const isHighlighted =
+                selectedTask?.id === from.id || selectedTask?.id === to?.id;
+
+              if (!to || !isHighlighted) return null;
+
+              return (
+                <Arrow
+                  key={`highlighted-arrow-${from.id}-${to.id}`}
+                  taskFrom={from}
+                  taskTo={to}
+                  rowHeight={rowHeight}
+                  taskHeight={taskHeight}
+                  arrowIndent={arrowIndent}
+                  rtl={rtl}
+                  highlightArrow={highlightArrow}
+                  isHighlighted={true}
+                  highlightArrowColor={highlightArrowColor}
+                />
+              );
             })
           )
         )}
