@@ -55,6 +55,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       className={styles.ganttVerticalContainer}
       ref={verticalGanttContainerRef}
       dir="ltr"
+      style={{ borderBottom: "1px solid #e6e4e4"}}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +71,6 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         style={{
           height: ganttHeight || dynamicHeight,
           width: gridProps.svgWidth,
-          borderBottom: "1px solid #e6e4e4",
         }}
       >
         <svg

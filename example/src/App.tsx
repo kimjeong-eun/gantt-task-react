@@ -72,14 +72,8 @@ const App = () => {
     {
       headerName : "",
       field : "phase",
-      headerStyle : {minWidth : '20px'},
-      cellStyle : { minWidth : '20px'}
-
+      minWidth : "20px"
     },
-    {
-      headerName: "",
-      field : "discipline"
-    }
   ]
 
   const tooltipContents = ({ task, fontSize, fontFamily }: {

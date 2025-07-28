@@ -97,6 +97,25 @@ export const TaskListTableDefault: React.FC<{
   };
   let renderedRowSpanMap: Record<string, boolean> = {};
 
+
+  const rowSpanHeightMap = useMemo(() => {
+    const map: Record<string, number> = {};
+
+    tasks.forEach((task) => {
+      const phase = String(task.tableData?.[rowSpanField]);
+      const count = overlappingCount(task);
+      const totalHeight = (count + 1) * rowHeight;
+
+      if (map[phase]) {
+        map[phase] += totalHeight;
+      } else {
+        map[phase] = totalHeight;
+      }
+    });
+
+    return map;
+  }, [tasks, rowHeight]);
+
   return (
     <table
       style={{
@@ -170,13 +189,15 @@ export const TaskListTableDefault: React.FC<{
                     style={{
                       boxSizing: "border-box",
                       minWidth: col.minWidth || rowWidth,
+                      maxWidth: col.minWidth || rowWidth,
                       border: "1px solid #e6e4e4",
                       padding : "0px",
                       textAlign: "center", // 가운데 정렬
                       verticalAlign: "middle",
                       writingMode: "vertical-rl", // 세로 쓰기
                       textOrientation: "upright", // 문자 방향 자연스럽게
-                      ...(col.cellStyle || {}),
+                      height: `${rowSpanHeightMap[rowSpanKey]}px`,
+                      minHeight: `${rowSpanHeightMap[rowSpanKey]}px`,
                     }}
                   >
                     {col.cellRenderer ? col.cellRenderer(task) : content}
