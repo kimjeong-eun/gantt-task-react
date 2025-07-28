@@ -198,6 +198,7 @@ export const TaskListTableDefault: React.FC<{
                       textOrientation: "upright", // 문자 방향 자연스럽게
                       height: `${rowSpanHeightMap[rowSpanKey]}px`,
                       minHeight: `${rowSpanHeightMap[rowSpanKey]}px`,
+                      ...(col.cellStyle || {}),
                     }}
                   >
                     {col.cellRenderer ? col.cellRenderer(task) : content}

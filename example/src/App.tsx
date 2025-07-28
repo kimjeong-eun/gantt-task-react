@@ -72,7 +72,7 @@ const App = () => {
     {
       headerName : "",
       field : "phase",
-      minWidth : "20px"
+      minWidth : "20px",
     },
   ]
 
