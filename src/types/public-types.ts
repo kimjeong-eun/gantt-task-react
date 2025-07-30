@@ -38,8 +38,8 @@ export interface Task {
   baselineEnd?: Date;
   baselineColor?: string;
   tableData ?: Record<string, TableCellValue>;
-
   siblingTasks?: Task[];
+  [key: string]: unknown;
 }
 
 //
