@@ -126,7 +126,7 @@ const App = () => {
 
       <h3>Gantt With Unlimited Height</h3>
       <Gantt
-        tasks={tasks}
+        tasks={[]}
         viewMode={view}
         onDateChange={handleTaskChange}
         onDelete={handleTaskDelete}

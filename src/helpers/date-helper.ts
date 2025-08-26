@@ -73,88 +73,101 @@ export const ganttDateRange = (
   tasks: Task[],
   viewMode: ViewMode,
   preStepsCount: number
-) => {
-  let newStartDate: Date = tasks[0].start;
-  let newEndDate: Date = tasks[0].end;
+): [Date, Date] => {
+  let newStartDate: Date;
+  let newEndDate: Date;
 
-  for (const task of tasks) {
-    const candidateDates = [
-      task.start,
-      task.end,
-      task.baselineStart,
-      task.baselineEnd,
-    ].filter(Boolean) as Date[];
+  // 1) tasks가 비어 있으면: 현재 연도 전체를 기본 범위로 사용
+  if (tasks.length === 0) {
+    const now = new Date();
+    const year = now.getFullYear();
+    newStartDate = new Date(year, 0, 1, 0, 0, 0, 0);          // 1월 1일 00:00:00
+    newEndDate   = new Date(year, 11, 31, 23, 59, 59, 999);   // 12월 31일 23:59:59
+  } else {
+    // 2) tasks가 있으면: 모든 후보일(start/end/baseline) 중 최소/최대 찾기
+    newStartDate = tasks[0].start;
+    newEndDate = tasks[0].end;
 
-    for (const date of candidateDates) {
-      if (date < newStartDate) newStartDate = date;
-      if (date > newEndDate) newEndDate = date;
+    for (const task of tasks) {
+      const candidateDates = [
+        task.start,
+        task.end,
+        task.baselineStart,
+        task.baselineEnd,
+      ].filter(Boolean) as Date[];
+
+      for (const date of candidateDates) {
+        if (date < newStartDate) newStartDate = date;
+        if (date > newEndDate) newEndDate = date;
+      }
     }
   }
 
-  // 기존 viewMode 확장 로직 유지
+  // 3) viewMode에 따른 확장/스냅
   switch (viewMode) {
-    case ViewMode.Year:
+    case ViewMode.Year: {
       newStartDate = addToDate(newStartDate, -1, "year");
       newStartDate = startOfDate(newStartDate, "year");
       newEndDate = addToDate(newEndDate, 1, "year");
       newEndDate = startOfDate(newEndDate, "year");
       break;
-    case ViewMode.QuarterYear:
+    }
+    case ViewMode.QuarterYear: {
       newStartDate = addToDate(newStartDate, -3, "month");
       newStartDate = startOfDate(newStartDate, "month");
       newEndDate = addToDate(newEndDate, 3, "year");
       newEndDate = startOfDate(newEndDate, "year");
       break;
-    case ViewMode.Month:
+    }
+    case ViewMode.Month: {
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "month");
       newStartDate = startOfDate(newStartDate, "month");
       newEndDate = addToDate(newEndDate, 1, "year");
       newEndDate = startOfDate(newEndDate, "year");
       break;
-    case ViewMode.Week:
+    }
+    case ViewMode.Week: {
       newStartDate = startOfDate(newStartDate, "day");
-      newStartDate = addToDate(
-        getMonday(newStartDate),
-        -7 * preStepsCount,
-        "day"
-      );
+      newStartDate = addToDate(getMonday(newStartDate), -7 * preStepsCount, "day");
       newEndDate = startOfDate(newEndDate, "day");
       newEndDate = addToDate(newEndDate, 1.5, "month");
       break;
-    case ViewMode.Day:
+    }
+    case ViewMode.Day: {
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
-  /*    newEndDate = startOfDate(newEndDate, "day");
-      newEndDate = addToDate(newEndDate, 19, "day");*/
+
+      // 종료일을 해당 '월의 마지막 날 23:59:59.999'로 맞춤
       const lastDay = getDaysInMonth(newEndDate.getMonth(), newEndDate.getFullYear());
       newEndDate = new Date(
         newEndDate.getFullYear(),
         newEndDate.getMonth(),
         lastDay,
-        23,
-        59,
-        59,
-        999
+        23, 59, 59, 999
       );
       break;
-    case ViewMode.QuarterDay:
+    }
+    case ViewMode.QuarterDay: {
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
       newEndDate = startOfDate(newEndDate, "day");
       newEndDate = addToDate(newEndDate, 66, "hour");
       break;
-    case ViewMode.HalfDay:
+    }
+    case ViewMode.HalfDay: {
       newStartDate = startOfDate(newStartDate, "day");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "day");
       newEndDate = startOfDate(newEndDate, "day");
       newEndDate = addToDate(newEndDate, 108, "hour");
       break;
-    case ViewMode.Hour:
+    }
+    case ViewMode.Hour: {
       newStartDate = startOfDate(newStartDate, "hour");
       newStartDate = addToDate(newStartDate, -1 * preStepsCount, "hour");
       newEndDate = startOfDate(newEndDate, "day");
       newEndDate = addToDate(newEndDate, 1, "day");
       break;
+    }
   }
 
   return [newStartDate, newEndDate];
