@@ -12,6 +12,9 @@ type ArrowProps = {
   arrowIndent: number;
   rtl: boolean;
   linkType?: LinkType; // 기본 ES(끝→시작)
+  highlightArrow ?: boolean;
+  isHighlighted?: boolean;
+  highlightArrowColor ?: string;
 };
 
 export const Arrow: React.FC<ArrowProps> = ({
@@ -22,6 +25,7 @@ export const Arrow: React.FC<ArrowProps> = ({
                                               arrowIndent,
                                               rtl,
                                               linkType = "ES",
+                                              isHighlighted = false, highlightArrow ,highlightArrowColor
                                             }) => {
   const fromSide: Side = linkType[0] === "S" ? "start" : "end";
   const toSide: Side = linkType[1] === "S" ? "start" : "end";
@@ -48,8 +52,13 @@ export const Arrow: React.FC<ArrowProps> = ({
 
   return (
     <g className="arrow">
-      <path strokeWidth="1.5" d={path} fill="none" />
-      <polygon points={trianglePoints} />
+      <path stroke={highlightArrow && isHighlighted ? highlightArrowColor : "#999"}
+            strokeWidth={highlightArrow && isHighlighted ? 2.5 : 1.5} d={path} fill="none" />
+      <polygon
+        points={trianglePoints}
+        fill={highlightArrow && isHighlighted ? highlightArrowColor : "#999"}
+        stroke="none"
+      />
     </g>
   );
 };

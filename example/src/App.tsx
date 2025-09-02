@@ -155,6 +155,7 @@ const App = () => {
         columnWidth={columnWidth}
         rowHeight={48}
         onScrollYChange={onScrollYChange}
+        highlightArrow={false}
       />
     </div>
   );

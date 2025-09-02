@@ -145,6 +145,7 @@ export interface StylingOption {
   arrowColor?: string;
   arrowIndent?: number;
   todayColor?: string;
+  highlightArrowColor ?: string;
   TooltipContent?: React.FC<{
     task: Task;
     fontSize: string;
@@ -178,4 +179,5 @@ export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
   colDefs ?: ColumnDef[];
   selectedTaskId ?:string;
+  highlightArrow ?: boolean;
 }

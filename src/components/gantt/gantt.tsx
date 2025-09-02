@@ -46,7 +46,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   projectBackgroundColor = "#fac465",
   projectBackgroundSelectedColor = "#f7bb53",
   milestoneBackgroundColor = "#f1c453",
-  milestoneBackgroundSelectedColor = "#f29e4c",
+  milestoneBackgroundSelectedColor = "#f29e4c",highlightArrowColor = "#ff6600",
   rtl = false,
   handleWidth = 8,
   timeStep = 300000,
@@ -70,7 +70,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   gridHeight = 0,
   externalScrollY = 0,
   onScrollYChange,
-  selectedTaskId =''
+  selectedTaskId ='',
+                                                             highlightArrow = false
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -474,6 +475,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     onDoubleClick,
     onClick,
     onDelete,
+    highlightArrow,
+    highlightArrowColor
   };
 
   const tableProps: TaskListProps = {
