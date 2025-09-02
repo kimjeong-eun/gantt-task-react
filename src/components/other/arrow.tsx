@@ -54,63 +54,49 @@ export const Arrow: React.FC<ArrowProps> = ({
   );
 };
 
-/* ===================== LTR: side-aware 버전 ===================== */
+/* =============== LTR: row 경계 스냅(항상 경계로 우회) =============== */
 function drownPathAndTriangle_SideAware(
   taskFrom: BarTask,
   taskTo: BarTask,
   rowHeight: number,
   taskHeight: number,
   arrowIndent: number,
-  fromSide: Side, // 'start'|'end'
-  toSide: Side    // 'start'|'end'
+  fromSide: Side,
+  toSide: Side
 ): [string, string] {
-  // 앵커 X
   const fromX = fromSide === "end" ? taskFrom.x2 : taskFrom.x1;
   const toX   = toSide   === "start" ? taskTo.x1   : taskTo.x2;
 
   const fromY = taskFrom.y + taskHeight / 2;
   const toY   = taskTo.y + taskHeight / 2;
 
-  const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
+  const fromRowTop = taskFrom.index * rowHeight;
+  const fromRowBottom = fromRowTop + rowHeight;
 
-  // LTR: end면 오른쪽(+), start면 왼쪽(-)
-  const fromDir = fromSide === "end" ? +1 : -1;
-  // 도착 엣지 기준으로, 마지막 들여쓰기 방향: start면 왼쪽(-)에서 멈추니 부호 +1, end면 오른쪽(+)에서 멈추니 부호 -1을 써서 (toX - toDir*indent) 계산에 쓰기 좋게 함
-  const toDir = toSide === "start" ? +1 : -1;
+  // ▼ 첫 꺾임을 "경계선"으로 스냅
+  //   - 아래로 내려가는 경우(자식이 아래 행): from 행의 "아래 경계"로
+  //   - 위로 올라가는 경우(자식이 위 행): from 행의 "위 경계"로
+  const goingDown = taskTo.index > taskFrom.index;
+  const elbowY = goingDown ? fromRowBottom : fromRowTop;
 
-  // 시작점에서 인덴트 2칸을 적용한 비교용 X
-  const fromEndX = fromX + fromDir * arrowIndent * 2;
+  const fromDir = fromSide === "end" ? +1 : -1;   // LTR 기준
+  const toDir   = toSide   === "start" ? +1 : -1; // LTR 기준
 
-  // 중간 수평(H)로 toX 근처까지 갈 필요가 있는지 (기존 로직의 부등식 일반화)
-  const needH = fromDir > 0 ? fromEndX > toX : fromEndX < toX;
-
-  // 경로 만들기 (기존 스타일 유지: M → h → v → [H?] → V → h)
   const parts: string[] = [];
   parts.push(`M ${fromX} ${fromY}`);
   parts.push(`h ${fromDir * arrowIndent}`);
-  parts.push(`v ${(indexCompare * rowHeight) / 2}`);
 
-  if (needH) {
-    // 도착 엣지에서 arrowIndent만큼 떨어진 절대 X
-    const targetHX = toX - toDir * arrowIndent;
-    parts.push(`H ${targetHX}`);
-  }
+  // 항상 경계로 먼저 붙기
+  parts.push(`V ${elbowY}`);
 
+  // 경계선 위/아래에서 수평 정렬 → 도착 y로 수직 → 마지막 h
+  parts.push(`H ${toX - toDir * arrowIndent}`);
   parts.push(`V ${toY}`);
-
-  if (needH) {
-    // 이미 toX - toDir*indent까지 와 있으니 마지막에 indent 만큼만
-    parts.push(`h ${toDir * arrowIndent}`);
-  } else {
-    // 아직 수평 정렬을 안 했으니, 현재 x에서 toX까지 한 번에
-    const currentX = fromX + fromDir * arrowIndent; // 첫 h 이후의 x
-    parts.push(`h ${toX - currentX}`);
-  }
+  parts.push(`h ${toDir * arrowIndent}`);
 
   const path = parts.join(" ");
 
-  // 삼각형 방향: LTR에서 start로 꽂히면 → 오른쪽(+)을 향해야 하므로 headDir=+1
-  //              end로 꽂히면 → 왼쪽(-)을 향해야 하므로 headDir=-1
+  // 화살촉: start로 꽂히면 오른쪽(+), end로 꽂히면 왼쪽(-)
   const headDir = toSide === "start" ? +1 : -1;
   const tipX = toX;
   const tipY = toY;
@@ -120,7 +106,7 @@ function drownPathAndTriangle_SideAware(
   return [path, trianglePoints];
 }
 
-/* ===================== RTL: side-aware 버전 ===================== */
+/* =============== RTL: row 경계 스냅(항상 경계로 우회) =============== */
 function drownPathAndTriangleRTL_SideAware(
   taskFrom: BarTask,
   taskTo: BarTask,
@@ -130,48 +116,34 @@ function drownPathAndTriangleRTL_SideAware(
   fromSide: Side,
   toSide: Side
 ): [string, string] {
-  // RTL에서 기존 로직은 from.x1 -> to.x2를 사용
+  // RTL 기준 앵커
   const fromX = fromSide === "end" ? taskFrom.x1 : taskFrom.x2;
   const toX   = toSide   === "start" ? taskTo.x2   : taskTo.x1;
 
   const fromY = taskFrom.y + taskHeight / 2;
   const toY   = taskTo.y + taskHeight / 2;
 
-  const indexCompare = taskFrom.index > taskTo.index ? -1 : 1;
+  const fromRowTop = taskFrom.index * rowHeight;
+  const fromRowBottom = fromRowTop + rowHeight;
 
-  // RTL: end면 왼쪽(-), start면 오른쪽(+)
-  const fromDir = fromSide === "end" ? -1 : +1;
-  // 도착 엣지 방향 부호: start면 왼쪽(-)을 향해 멈추니 -1, end면 오른쪽(+)을 향해 멈추니 +1
-  const toDir = toSide === "start" ? -1 : +1;
+  const goingDown = taskTo.index > taskFrom.index;
+  const elbowY = goingDown ? fromRowBottom : fromRowTop;
 
-  const fromEndX = fromX + fromDir * arrowIndent * 2;
-
-  // fromDir이 -면 왼쪽으로 가니, 왼쪽으로 넘어가면 needH; +면 오른쪽으로 가니, 오른쪽으로 넘어가면 needH
-  const needH = fromDir < 0 ? fromEndX < toX : fromEndX > toX;
+  const fromDir = fromSide === "end" ? -1 : +1;   // RTL 기준
+  const toDir   = toSide   === "start" ? -1 : +1; // RTL 기준
 
   const parts: string[] = [];
   parts.push(`M ${fromX} ${fromY}`);
-  parts.push(`h ${fromDir * arrowIndent}`); // RTL에서는 end면 음수
-  parts.push(`v ${(indexCompare * rowHeight) / 2}`);
+  parts.push(`h ${fromDir * arrowIndent}`);
 
-  if (needH) {
-    const targetHX = toX - toDir * arrowIndent;
-    parts.push(`H ${targetHX}`);
-  }
-
+  parts.push(`V ${elbowY}`);
+  parts.push(`H ${toX - toDir * arrowIndent}`);
   parts.push(`V ${toY}`);
-
-  if (needH) {
-    parts.push(`h ${toDir * arrowIndent}`);
-  } else {
-    const currentX = fromX + fromDir * arrowIndent;
-    parts.push(`h ${toX - currentX}`);
-  }
+  parts.push(`h ${toDir * arrowIndent}`);
 
   const path = parts.join(" ");
 
-  // 삼각형 방향: RTL에서는 start로 꽂히면 시각적으로 "왼쪽(-)"을 향해야 함 → headDir=-1
-  //              end로 꽂히면 "오른쪽(+)"을 향해야 함 → headDir=+1
+  // 화살촉: RTL에선 start면 좌(-), end면 우(+)
   const headDir = toSide === "start" ? -1 : +1;
   const tipX = toX;
   const tipY = toY;
