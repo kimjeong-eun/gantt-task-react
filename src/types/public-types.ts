@@ -9,6 +9,13 @@ export enum ViewMode {
   QuarterYear = "QuarterYear",
   Year = "Year",
 }
+export type DependencyType = "SS" | "SE" | "ES" | "EE";
+
+export interface Dependency {
+  id: string;
+  type?: DependencyType;
+}
+
 export type TaskType = "task" | "milestone" | "project";
 export interface Task {
   id: string;
@@ -30,7 +37,7 @@ export interface Task {
   };
   isDisabled?: boolean;
   project?: string;
-  dependencies?: string[];
+  dependencies?: (string | Dependency)[];
   hideChildren?: boolean;
   displayOrder?: number;
   baselineStart?: Date;

@@ -1,4 +1,9 @@
-import { Task, TaskType } from "./public-types";
+import { DependencyType, Task, TaskType } from "./public-types";
+
+export interface BarChild {
+  index: number;             // 연결 대상 Task의 index
+  linkType: DependencyType;  // 연결 타입
+}
 
 export interface BarTask extends Task {
   index: number;
@@ -11,7 +16,7 @@ export interface BarTask extends Task {
   progressWidth: number;
   barCornerRadius: number;
   handleWidth: number;
-  barChildren: BarTask[];
+  barChildren: BarChild[];
   styles: {
     backgroundColor: string;
     backgroundSelectedColor: string;

@@ -129,16 +129,14 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
       // custom operation start
       let operationSuccess = true;
+      const childrenTasks = newChangedTask.barChildren.map(bc => tasks[bc.index]);
       if (
         (action === "move" || action === "end" || action === "start") &&
         onDateChange &&
         isNotLikeOriginal
       ) {
         try {
-          const result = await onDateChange(
-            newChangedTask,
-            newChangedTask.barChildren
-          );
+          const result = await onDateChange(newChangedTask, childrenTasks); //
           if (result !== undefined) {
             operationSuccess = result;
           }
@@ -147,10 +145,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         }
       } else if (onProgressChange && isNotLikeOriginal) {
         try {
-          const result = await onProgressChange(
-            newChangedTask,
-            newChangedTask.barChildren
-          );
+          const result = await onProgressChange(newChangedTask, childrenTasks); //
           if (result !== undefined) {
             operationSuccess = result;
           }
@@ -158,7 +153,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
           operationSuccess = false;
         }
       }
-
       // If operation is failed - return old state
       if (!operationSuccess) {
         setFailedTask(originalSelectedTask);
@@ -264,15 +258,17 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     <g className="content">
       <g className="arrows" fill={arrowColor} stroke={arrowColor}>
         {tasks.map(task => {
-          return task.barChildren.map(child => {
+          return task.barChildren.map((child,i) => {
+            const toTask = tasks[child.index];
             return (
               <Arrow
-                key={`Arrow from ${task.id} to ${tasks[child.index].id}`}
+                key={`Arrow-${child.linkType}-${task.id}->${toTask.id}-${i}`}
                 taskFrom={task}
                 taskTo={tasks[child.index]}
                 rowHeight={rowHeight}
                 taskHeight={taskHeight}
                 arrowIndent={arrowIndent}
+                linkType={child.linkType}
                 rtl={rtl}
               />
             );

@@ -153,7 +153,7 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
-        rowHeight={30}
+        rowHeight={48}
         onScrollYChange={onScrollYChange}
       />
     </div>

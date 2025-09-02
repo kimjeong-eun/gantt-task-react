@@ -47,15 +47,42 @@ export const convertToBarTasks = (
   });
 
   // set dependencies
-  barTasks = barTasks.map(task => {
-    const dependencies = task.dependencies || [];
-    for (let j = 0; j < dependencies.length; j++) {
-      const dependence = barTasks.findIndex(
-        value => value.id === dependencies[j]
+  const idToIndex = new Map<string, number>();
+  for (let i = 0; i < barTasks.length; i++) idToIndex.set(barTasks[i].id, i);
+
+// (가능하면 타입은 공용 타입에서 import하세요)
+// import { DependencyType, Dependency } from "../types/public-types";
+  type DependencyType = "SS" | "SE" | "ES" | "EE";
+  type DepInput = string | { id: string; type?: DependencyType };
+
+  const normalizeDeps = (deps?: DepInput[]) =>
+    (deps ?? []).map(d =>
+      typeof d === "string"
+        ? { id: d, type: "ES" as DependencyType }
+        : { id: d.id, type: d.type ?? "ES" }
+    );
+
+// 🔁 핵심: "자식(child) 입장"에서 dependencies를 읽고,
+//         각 dependency의 부모(parentIdx)를 찾아
+//         부모의 barChildren에 { index: child.index, linkType }를 푸시
+  barTasks.forEach(child => {
+    const deps = normalizeDeps(child.dependencies as DepInput[]);
+    deps.forEach(dep => {
+      const parentIdx = idToIndex.get(dep.id);
+      if (parentIdx == null) return;         // 필요 시 throw로 바꿔도 됨
+      if (parentIdx === child.index) return; // 자기 자신 의존 방지(옵션)
+
+      // 중복 방지(옵션)
+      const already = barTasks[parentIdx].barChildren.some(
+        bc => bc.index === child.index && bc.linkType === dep.type
       );
-      if (dependence !== -1) barTasks[dependence].barChildren.push(task);
-    }
-    return task;
+      if (!already) {
+        barTasks[parentIdx].barChildren.push({
+          index: child.index,
+          linkType: dep.type,
+        });
+      }
+    });
   });
 
   return barTasks;
