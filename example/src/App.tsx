@@ -14,7 +14,7 @@ const App = () => {
   if (view === ViewMode.Year) {
     columnWidth = 350;
   } else if (view === ViewMode.Month) {
-    columnWidth = 300;
+    columnWidth = 100;
   } else if (view === ViewMode.Week) {
     columnWidth = 250;
   }

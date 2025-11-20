@@ -120,10 +120,11 @@ export const ganttDateRange = (
       break;
     }
     case ViewMode.Month: {
-      newStartDate = addToDate(newStartDate, -1 * preStepsCount, "month");
-      newStartDate = startOfDate(newStartDate, "month");
-      newEndDate = addToDate(newEndDate, 1, "year");
-      newEndDate = startOfDate(newEndDate, "year");
+      const startYear = newStartDate.getFullYear();
+      const endYear = newEndDate.getFullYear();
+
+      newStartDate = new Date(startYear, 0, 1, 0, 0, 0, 0);         // 최소 연도 1월 1일
+      newEndDate   = new Date(endYear, 11, 31, 23, 59, 59, 999);    // 최대 연도 12월 31일
       break;
     }
     case ViewMode.Week: {
@@ -214,7 +215,7 @@ export const seedDates = (
 
 export const getLocaleMonth = (date: Date, locale: string) => {
   let bottomValue = getCachedDateTimeFormat(locale, {
-    month: "long",
+    month: "short",
   }).format(date);
   bottomValue = bottomValue.replace(
     bottomValue[0],

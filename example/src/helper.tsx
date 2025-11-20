@@ -9,14 +9,12 @@ export function initTasks() {
     {
       id: '2',
       name: 'Development',
-      start: new Date('2025-05-06'),
-      end: new Date('2025-07-09'),
+      start: new Date('2025-09-12'),
+      end: new Date('2025-09-19'),
       type: 'task',
       progress: 50,
       styles: { progressColor: '#f87060', backgroundColor: '#f87060' },
       dependencies: [{id:'1',type:'SE'}],
-      baselineStart : new Date('2025-06-03'),
-      baselineEnd : new Date('2025-06-08'),
       baselineColor:'#de6565',
       tableData : {
         name2 : 'test',

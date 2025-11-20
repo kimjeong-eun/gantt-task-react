@@ -287,7 +287,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         i + 1 !== dates.length &&
         date.getMonth() !== dates[i + 1].getMonth()
       ) {
-        const topValue = getLocaleMonth(date, locale);
+        const topValue = `${getLocaleMonth(date, locale)} ${date.getFullYear()}`;
 
         topValues.push(
           <TopPartOfCalendar
