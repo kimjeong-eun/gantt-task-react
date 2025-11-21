@@ -46,8 +46,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
                                                              projectBackgroundColor = "#fac465",
                                                              projectBackgroundSelectedColor = "#f7bb53",
                                                              milestoneBackgroundColor = "#f1c453",
-                                                             milestoneBackgroundSelectedColor = "#f29e4c",
-                                                             highlightArrowColor = "#ff6600",
+                                                             milestoneBackgroundSelectedColor = "#f29e4c",highlightArrowColor = "#ff6600",
                                                              rtl = false,
                                                              handleWidth = 8,
                                                              timeStep = 300000,
@@ -67,21 +66,19 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
                                                              onDelete,
                                                              onSelect,
                                                              onExpanderClick,
-                                                             headerColor = "",
+                                                             headerColor ='',
                                                              gridHeight = 0,
                                                              externalScrollY = 0,
                                                              onScrollYChange,
-                                                             selectedTaskId = "",
-                                                             highlightArrow = false,
+                                                             selectedTaskId ='',
+                                                             highlightArrow = false
                                                            }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
-
   const [dateSetup, setDateSetup] = useState<DateSetup>(() => {
     const [startDate, endDate] = ganttDateRange(tasks, viewMode, preStepsCount);
     return { viewMode, dates: seedDates(startDate, endDate, viewMode) };
   });
-
   const [currentViewDate, setCurrentViewDate] = useState<Date | undefined>(
     undefined
   );
@@ -89,32 +86,36 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   const [taskListWidth, setTaskListWidth] = useState(0);
   const [svgContainerWidth, setSvgContainerWidth] = useState(0);
   const [svgContainerHeight, setSvgContainerHeight] = useState(ganttHeight);
-
   const [barTasks, setBarTasks] = useState<BarTask[]>([]);
-  const [ganttEvent, setGanttEvent] = useState<GanttEvent>({ action: "" });
-  const [selectedTask, setSelectedTask] = useState<BarTask>();
-  const [failedTask, setFailedTask] = useState<BarTask | null>(null);
-
+  const [ganttEvent, setGanttEvent] = useState<GanttEvent>({
+    action: "",
+  });
   const taskHeight = useMemo(
     () => (rowHeight * barFill) / 100,
     [rowHeight, barFill]
   );
 
+  const [selectedTask, setSelectedTask] = useState<BarTask>();
+  const [failedTask, setFailedTask] = useState<BarTask | null>(null);
+
   const svgWidth = dateSetup.dates.length * columnWidth;
-  const ganttFullHeight = gridHeight ? gridHeight : barTasks.length * rowHeight;
+  const ganttFullHeight = gridHeight ? gridHeight :  barTasks.length * rowHeight;
 
   const [scrollY, setScrollY] = useState(0);
   const [scrollX, setScrollX] = useState(-1);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
 
-  // 외부 Y 스크롤과 동기화
+  //sync external scroll
   useEffect(() => {
-    if (typeof externalScrollY === "number" && externalScrollY !== scrollY) {
+    if (
+      typeof externalScrollY === "number" &&
+      externalScrollY !== scrollY
+    ) {
       setScrollY(externalScrollY);
     }
-  }, [externalScrollY, scrollY]);
+  }, [externalScrollY]);
 
-  // 초기 선택 task 스크롤 포커싱
+  //init task id
   useEffect(() => {
     if (!selectedTaskId) return;
 
@@ -122,41 +123,36 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     const found = barTasks.find(t => t.id === selectedTaskId);
 
     if (!alreadySelected && found) {
-      const centerX = found.x1 + (found.x2 - found.x1) / 2;
-      setScrollX(centerX - svgContainerWidth / 2);
+      setScrollX(found.x1 + (found.x2 - found.x1) / 2 - svgContainerWidth / 2);
       setIgnoreScrollEvent(true);
       handleSelectedTask(selectedTaskId);
-    } else {
+    } else{
       setIgnoreScrollEvent(false);
     }
-  }, [selectedTaskId, barTasks, selectedTask, svgContainerWidth]);
+  }, [selectedTaskId, barTasks]);
 
-  // tasks / viewMode / 스타일 변경 시 barTasks & dates 재계산
+  // task change events
   useEffect(() => {
     let filteredTasks: Task[];
-
     if (onExpanderClick) {
       filteredTasks = removeHiddenTasks(tasks);
     } else {
       filteredTasks = tasks;
     }
-
     filteredTasks = filteredTasks.sort(sortTasks);
-
     const [startDate, endDate] = ganttDateRange(
       filteredTasks,
       viewMode,
       preStepsCount
     );
-
     let newDates = seedDates(startDate, endDate, viewMode);
-
     if (rtl) {
       newDates = newDates.reverse();
+      if (scrollX === -1) {
+        setScrollX(newDates.length * columnWidth);
+      }
     }
-
     setDateSetup({ dates: newDates, viewMode });
-
     setBarTasks(
       convertToBarTasks(
         filteredTasks,
@@ -199,17 +195,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     milestoneBackgroundColor,
     milestoneBackgroundSelectedColor,
     rtl,
+    scrollX,
     onExpanderClick,
   ]);
 
-  // rtl 모드에서 초기 scrollX 설정 (별도 effect로 분리)
-  useEffect(() => {
-    if (rtl && scrollX === -1) {
-      setScrollX(dateSetup.dates.length * columnWidth);
-    }
-  }, [rtl, scrollX, dateSetup.dates.length, columnWidth]);
-
-  // viewDate 변경 시 해당 위치로 포커싱
   useEffect(() => {
     if (
       viewMode === dateSetup.viewMode &&
@@ -236,9 +225,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     dateSetup.viewMode,
     viewMode,
     currentViewDate,
+    setCurrentViewDate,
   ]);
 
-  // ganttEvent 반영
   useEffect(() => {
     const { changedTask, action } = ganttEvent;
     if (changedTask) {
@@ -258,6 +247,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
             prevStateTask.end.getTime() !== changedTask.end.getTime() ||
             prevStateTask.progress !== changedTask.progress)
         ) {
+          // actions for change
           const newTaskList = barTasks.map(t =>
             t.id === changedTask.id ? changedTask : t
           );
@@ -267,7 +257,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [ganttEvent, barTasks]);
 
-  // 실패 task 롤백
   useEffect(() => {
     if (failedTask) {
       setBarTasks(barTasks.map(t => (t.id !== failedTask.id ? t : failedTask)));
@@ -275,25 +264,21 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [failedTask, barTasks]);
 
-  // taskList width 계산
   useEffect(() => {
     if (!listCellWidth) {
       setTaskListWidth(0);
-      return;
     }
     if (taskListRef.current) {
       setTaskListWidth(taskListRef.current.offsetWidth);
     }
   }, [taskListRef, listCellWidth]);
 
-  // svgContainerWidth 계산
   useEffect(() => {
     if (wrapperRef.current) {
       setSvgContainerWidth(wrapperRef.current.offsetWidth - taskListWidth);
     }
   }, [wrapperRef, taskListWidth]);
 
-  // svgContainerHeight 계산
   useEffect(() => {
     if (ganttHeight) {
       setSvgContainerHeight(ganttHeight + headerHeight);
@@ -302,7 +287,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
-  // wheel 스크롤 처리 (가로/세로)
+  // scroll events
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
       if (event.shiftKey || event.deltaX) {
@@ -332,10 +317,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       setIgnoreScrollEvent(true);
     };
 
+    // subscribe if scroll is necessary
     wrapperRef.current?.addEventListener("wheel", handleWheel, {
       passive: false,
     });
-
     return () => {
       wrapperRef.current?.removeEventListener("wheel", handleWheel);
     };
@@ -345,16 +330,23 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     scrollX,
     ganttHeight,
     svgWidth,
+    rtl,
     ganttFullHeight,
-    onScrollYChange,
+    onScrollYChange
   ]);
 
   const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
+    /*    if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
+          setScrollY(event.currentTarget.scrollTop);
+          setIgnoreScrollEvent(true);
+        } else {
+          setIgnoreScrollEvent(false);
+        }*/
     const newScrollTop = event.currentTarget.scrollTop;
 
     if (newScrollTop !== scrollY && !ignoreScrollEvent) {
       setScrollY(newScrollTop);
-      onScrollYChange?.(newScrollTop);
+      onScrollYChange?.(newScrollTop); // 외부에 변경 알림
       setIgnoreScrollEvent(true);
     } else {
       setIgnoreScrollEvent(false);
@@ -370,20 +362,21 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
   };
 
-  // 키보드 방향키 스크롤
+  /**
+   * Handles arrow keys events and transform it to new scroll
+   */
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     event.preventDefault();
     let newScrollY = scrollY;
     let newScrollX = scrollX;
     let isX = true;
-
     switch (event.key) {
-      case "Down":
+      case "Down": // IE/Edge specific value
       case "ArrowDown":
         newScrollY += rowHeight;
         isX = false;
         break;
-      case "Up":
+      case "Up": // IE/Edge specific value
       case "ArrowUp":
         newScrollY -= rowHeight;
         isX = false;
@@ -392,12 +385,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       case "ArrowLeft":
         newScrollX -= columnWidth;
         break;
-      case "Right":
+      case "Right": // IE/Edge specific value
       case "ArrowRight":
         newScrollX += columnWidth;
         break;
     }
-
     if (isX) {
       if (newScrollX < 0) {
         newScrollX = 0;
@@ -416,13 +408,14 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     setIgnoreScrollEvent(true);
   };
 
-  // Task 선택
+  /**
+   * Task select event
+   */
   const handleSelectedTask = (taskId: string) => {
     const newSelectedTask = barTasks.find(t => t.id === taskId);
     const oldSelectedTask = barTasks.find(
       t => !!selectedTask && t.id === selectedTask.id
     );
-
     if (onSelect) {
       if (oldSelectedTask) {
         onSelect(oldSelectedTask, false);
@@ -433,13 +426,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     }
     setSelectedTask(newSelectedTask);
   };
-
   const handleExpanderClick = (task: Task) => {
     if (onExpanderClick && task.hideChildren !== undefined) {
       onExpanderClick({ ...task, hideChildren: !task.hideChildren });
     }
   };
-
   const gridProps: GridProps = {
     columnWidth,
     svgWidth,
@@ -448,9 +439,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     dates: dateSetup.dates,
     todayColor,
     rtl,
-    gridHeight,
+    gridHeight
   };
-
   const calendarProps: CalendarProps = {
     dateSetup,
     locale,
@@ -462,7 +452,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     rtl,
     headerColor,
   };
-
   const barProps: TaskGanttContentProps = {
     tasks: barTasks,
     dates: dateSetup.dates,
@@ -487,7 +476,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     onClick,
     onDelete,
     highlightArrow,
-    highlightArrowColor,
+    highlightArrowColor
   };
 
   const tableProps: TaskListProps = {
@@ -509,7 +498,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     TaskListHeader,
     TaskListTable,
   };
-
   return (
     <div>
       <div
